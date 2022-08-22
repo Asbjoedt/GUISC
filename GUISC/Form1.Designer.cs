@@ -36,18 +36,18 @@
             this.Cancel = new System.Windows.Forms.Button();
             this.Title = new System.Windows.Forms.Label();
             this.Link = new System.Windows.Forms.LinkLabel();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
+            this.resultsLog_label = new System.Windows.Forms.Label();
+            this.Function_label = new System.Windows.Forms.Label();
             this.Recurse = new System.Windows.Forms.CheckBox();
             this.inputDir_button = new System.Windows.Forms.Button();
             this.outputDir_button = new System.Windows.Forms.Button();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.outputDir_open = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.Stopwatch = new System.Windows.Forms.Label();
-            this.label4 = new System.Windows.Forms.Label();
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.currentProcessLine = new System.Windows.Forms.TextBox();
+            this.currentProcessLine_label = new System.Windows.Forms.Label();
+            this.resultsDir_open = new System.Windows.Forms.Button();
+            this.timeWindow = new System.Windows.Forms.TextBox();
+            this.timeWindow_label = new System.Windows.Forms.Label();
+            this.progressBar_label = new System.Windows.Forms.Label();
+            this.Function_picker = new System.Windows.Forms.ComboBox();
             this.inputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
             this.outputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
             this.SuspendLayout();
@@ -127,23 +127,23 @@
             this.Link.TabStop = true;
             this.Link.Text = "GitHub";
             // 
-            // label2
+            // resultsLog_label
             // 
-            this.label2.AutoSize = true;
-            this.label2.Location = new System.Drawing.Point(406, 243);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(64, 15);
-            this.label2.TabIndex = 14;
-            this.label2.Text = "Results log";
+            this.resultsLog_label.AutoSize = true;
+            this.resultsLog_label.Location = new System.Drawing.Point(406, 243);
+            this.resultsLog_label.Name = "resultsLog_label";
+            this.resultsLog_label.Size = new System.Drawing.Size(64, 15);
+            this.resultsLog_label.TabIndex = 14;
+            this.resultsLog_label.Text = "Results log";
             // 
-            // label3
+            // Function_label
             // 
-            this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(12, 105);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(95, 15);
-            this.label3.TabIndex = 15;
-            this.label3.Text = "Choose function";
+            this.Function_label.AutoSize = true;
+            this.Function_label.Location = new System.Drawing.Point(12, 105);
+            this.Function_label.Name = "Function_label";
+            this.Function_label.Size = new System.Drawing.Size(95, 15);
+            this.Function_label.TabIndex = 15;
+            this.Function_label.Text = "Choose function";
             // 
             // Recurse
             // 
@@ -166,7 +166,7 @@
             this.inputDir_button.TabIndex = 17;
             this.inputDir_button.Text = "...";
             this.inputDir_button.UseVisualStyleBackColor = true;
-            this.inputDir_button.Click += new System.EventHandler(this.inputDir_button_Click);
+            this.inputDir_button.Click += new System.EventHandler(this.InputDir_button_Click);
             // 
             // outputDir_button
             // 
@@ -177,73 +177,75 @@
             this.outputDir_button.TabIndex = 18;
             this.outputDir_button.Text = "...";
             this.outputDir_button.UseVisualStyleBackColor = true;
+            this.outputDir_button.Click += new System.EventHandler(this.OutputDir_button_Click);
             // 
-            // textBox1
+            // currentProcessLine
             // 
-            this.textBox1.Location = new System.Drawing.Point(12, 217);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ReadOnly = true;
-            this.textBox1.Size = new System.Drawing.Size(458, 23);
-            this.textBox1.TabIndex = 19;
+            this.currentProcessLine.Location = new System.Drawing.Point(12, 217);
+            this.currentProcessLine.Name = "currentProcessLine";
+            this.currentProcessLine.ReadOnly = true;
+            this.currentProcessLine.Size = new System.Drawing.Size(458, 23);
+            this.currentProcessLine.TabIndex = 19;
             // 
-            // label1
+            // currentProcessLine_label
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(358, 199);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(112, 15);
-            this.label1.TabIndex = 20;
-            this.label1.Text = "Current process line";
+            this.currentProcessLine_label.AutoSize = true;
+            this.currentProcessLine_label.Location = new System.Drawing.Point(358, 199);
+            this.currentProcessLine_label.Name = "currentProcessLine_label";
+            this.currentProcessLine_label.Size = new System.Drawing.Size(112, 15);
+            this.currentProcessLine_label.TabIndex = 20;
+            this.currentProcessLine_label.Text = "Current process line";
             // 
-            // outputDir_open
+            // resultsDir_open
             // 
-            this.outputDir_open.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.outputDir_open.Location = new System.Drawing.Point(174, 188);
-            this.outputDir_open.Name = "outputDir_open";
-            this.outputDir_open.Size = new System.Drawing.Size(105, 23);
-            this.outputDir_open.TabIndex = 21;
-            this.outputDir_open.Text = "Open results dir";
-            this.outputDir_open.UseVisualStyleBackColor = true;
-            this.outputDir_open.Click += new System.EventHandler(this.outputDir_open_Click);
+            this.resultsDir_open.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.resultsDir_open.Location = new System.Drawing.Point(174, 188);
+            this.resultsDir_open.Name = "resultsDir_open";
+            this.resultsDir_open.Size = new System.Drawing.Size(105, 23);
+            this.resultsDir_open.TabIndex = 21;
+            this.resultsDir_open.Text = "Open results dir";
+            this.resultsDir_open.UseVisualStyleBackColor = true;
+            this.resultsDir_open.Click += new System.EventHandler(this.ResultsDir_open_Click);
             // 
-            // textBox2
+            // timeWindow
             // 
-            this.textBox2.Location = new System.Drawing.Point(395, 129);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.ReadOnly = true;
-            this.textBox2.Size = new System.Drawing.Size(75, 23);
-            this.textBox2.TabIndex = 22;
+            this.timeWindow.Location = new System.Drawing.Point(395, 129);
+            this.timeWindow.Name = "timeWindow";
+            this.timeWindow.ReadOnly = true;
+            this.timeWindow.Size = new System.Drawing.Size(75, 23);
+            this.timeWindow.TabIndex = 22;
             // 
-            // Stopwatch
+            // timeWindow_label
             // 
-            this.Stopwatch.AutoSize = true;
-            this.Stopwatch.Location = new System.Drawing.Point(405, 111);
-            this.Stopwatch.Name = "Stopwatch";
-            this.Stopwatch.Size = new System.Drawing.Size(65, 15);
-            this.Stopwatch.TabIndex = 23;
-            this.Stopwatch.Text = "Time spent";
+            this.timeWindow_label.AutoSize = true;
+            this.timeWindow_label.Location = new System.Drawing.Point(405, 111);
+            this.timeWindow_label.Name = "timeWindow_label";
+            this.timeWindow_label.Size = new System.Drawing.Size(65, 15);
+            this.timeWindow_label.TabIndex = 23;
+            this.timeWindow_label.Text = "Time spent";
             // 
-            // label4
+            // progressBar_label
             // 
-            this.label4.AutoSize = true;
-            this.label4.Location = new System.Drawing.Point(398, 155);
-            this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(72, 15);
-            this.label4.TabIndex = 24;
-            this.label4.Text = "Progress bar";
+            this.progressBar_label.AutoSize = true;
+            this.progressBar_label.Location = new System.Drawing.Point(398, 155);
+            this.progressBar_label.Name = "progressBar_label";
+            this.progressBar_label.Size = new System.Drawing.Size(72, 15);
+            this.progressBar_label.TabIndex = 24;
+            this.progressBar_label.Text = "Progress bar";
             // 
-            // comboBox1
+            // Function_picker
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Items.AddRange(new object[] {
-            "Count",
-            "Count and convert",
-            "Count, convert and compre",
-            "Count, convert, compare and archive"});
-            this.comboBox1.Location = new System.Drawing.Point(12, 123);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(227, 23);
-            this.comboBox1.TabIndex = 25;
+            this.Function_picker.FormattingEnabled = true;
+            this.Function_picker.Items.AddRange(new object[] {
+            "1. Count",
+            "2. Count and convert",
+            "3. Count, convert and compare",
+            "4. Count, convert, compare and archive"});
+            this.Function_picker.Location = new System.Drawing.Point(12, 123);
+            this.Function_picker.Name = "Function_picker";
+            this.Function_picker.Size = new System.Drawing.Size(237, 23);
+            this.Function_picker.TabIndex = 25;
+            this.Function_picker.Text = "Choice mandatory";
             // 
             // Function
             // 
@@ -251,18 +253,18 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(482, 483);
-            this.Controls.Add(this.comboBox1);
-            this.Controls.Add(this.label4);
-            this.Controls.Add(this.Stopwatch);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.outputDir_open);
-            this.Controls.Add(this.label1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.Function_picker);
+            this.Controls.Add(this.progressBar_label);
+            this.Controls.Add(this.timeWindow_label);
+            this.Controls.Add(this.timeWindow);
+            this.Controls.Add(this.resultsDir_open);
+            this.Controls.Add(this.currentProcessLine_label);
+            this.Controls.Add(this.currentProcessLine);
             this.Controls.Add(this.outputDir_button);
             this.Controls.Add(this.inputDir_button);
             this.Controls.Add(this.Recurse);
-            this.Controls.Add(this.label3);
-            this.Controls.Add(this.label2);
+            this.Controls.Add(this.Function_label);
+            this.Controls.Add(this.resultsLog_label);
             this.Controls.Add(this.Link);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.Cancel);
@@ -271,10 +273,6 @@
             this.Controls.Add(this.outputDir);
             this.Controls.Add(this.inputDir);
             this.Controls.Add(this.Run);
-            this.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Name = "Function";
-            this.Text = "Choose                                                                           " +
-    "                     ";
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -290,18 +288,18 @@
         private Button Cancel;
         private Label Title;
         private LinkLabel Link;
-        private Label label2;
-        private Label label3;
+        private Label resultsLog_label;
+        private Label Function_label;
         private CheckBox Recurse;
         private Button inputDir_button;
         private Button outputDir_button;
-        private TextBox textBox1;
-        private Label label1;
-        private Button outputDir_open;
-        private TextBox textBox2;
-        private Label Stopwatch;
-        private Label label4;
-        private ComboBox comboBox1;
+        private TextBox currentProcessLine;
+        private Label currentProcessLine_label;
+        private Button resultsDir_open;
+        private TextBox timeWindow;
+        private Label timeWindow_label;
+        private Label progressBar_label;
+        private ComboBox Function_picker;
         private FolderBrowserDialog inputDir_prompt;
         private FolderBrowserDialog outputDir_prompt;
     }
