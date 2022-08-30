@@ -113,19 +113,19 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\Asbjo\\.nuget\\packages\\": {}
+    "C:\\Users\\B046804\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Asbjo\\Source\\Repos\\GUISC\\GUISC\\GUISC.csproj",
+      "projectUniqueName": "C:\\Users\\B046804\\Source\\Repos\\Asbjoedt\\GUISC\\GUISC\\GUISC.csproj",
       "projectName": "GUISC",
-      "projectPath": "C:\\Users\\Asbjo\\Source\\Repos\\GUISC\\GUISC\\GUISC.csproj",
-      "packagesPath": "C:\\Users\\Asbjo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Asbjo\\Source\\Repos\\GUISC\\GUISC\\obj\\",
+      "projectPath": "C:\\Users\\B046804\\Source\\Repos\\Asbjoedt\\GUISC\\GUISC\\GUISC.csproj",
+      "packagesPath": "C:\\Users\\B046804\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\B046804\\Source\\Repos\\Asbjoedt\\GUISC\\GUISC\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Asbjo\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\B046804\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
       "originalTargetFrameworks": [
