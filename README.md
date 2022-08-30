@@ -18,7 +18,7 @@ A small Windows application made in C# and Windows Forms. It is a hobby project.
 * You need to install program in its default directory, or create environment variable "BeyondCompare" with path to your installation
 
 ## Packages and software
-The following packages and software are used under license in GUISC. [Read more](https://github.com/Asbjoedt/CLISC/wiki/Dependencies).
+The following packages and software are used under license in GUISC.
 
 * [Beyond Compare 4](https://www.scootersoftware.com/index.php), Copyright (c) 2022 Scooter Software, Inc.
 * [Microsoft Excel](https://www.microsoft.com/en-us/microsoft-365/excel), Copyright (c) Microsoft Corporation
