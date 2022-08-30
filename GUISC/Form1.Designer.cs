@@ -67,6 +67,7 @@
             // 
             this.inputDir.Location = new System.Drawing.Point(12, 40);
             this.inputDir.Name = "inputDir";
+            this.inputDir.ReadOnly = true;
             this.inputDir.Size = new System.Drawing.Size(404, 23);
             this.inputDir.TabIndex = 1;
             this.inputDir.Text = "Choose input directory";
@@ -75,6 +76,7 @@
             // 
             this.outputDir.Location = new System.Drawing.Point(12, 69);
             this.outputDir.Name = "outputDir";
+            this.outputDir.ReadOnly = true;
             this.outputDir.Size = new System.Drawing.Size(404, 23);
             this.outputDir.TabIndex = 2;
             this.outputDir.Text = "Choose output directory";
@@ -238,14 +240,14 @@
             this.Function_picker.FormattingEnabled = true;
             this.Function_picker.Items.AddRange(new object[] {
             "1. Count",
-            "2. Count and convert",
-            "3. Count, convert and compare",
-            "4. Count, convert, compare and archive"});
+            "2. Count & Convert",
+            "3. Count, Convert & Compare",
+            "4. Count, Convert, Compare & Archive"});
             this.Function_picker.Location = new System.Drawing.Point(12, 123);
             this.Function_picker.Name = "Function_picker";
             this.Function_picker.Size = new System.Drawing.Size(237, 23);
             this.Function_picker.TabIndex = 25;
-            this.Function_picker.Text = "Choice mandatory";
+            this.Function_picker.Text = "Mandatory";
             // 
             // Function
             // 
@@ -273,6 +275,7 @@
             this.Controls.Add(this.outputDir);
             this.Controls.Add(this.inputDir);
             this.Controls.Add(this.Run);
+            this.Name = "Function";
             this.ResumeLayout(false);
             this.PerformLayout();
 
