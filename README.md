@@ -1,7 +1,7 @@
 # GUISC
 **Graphical User Interface Spreadsheet Count, Convert, Compare & Archive**
 
-A small Windows application made in C# and Windows Forms. It is a hobby project. The app might have use cases in digital archiving of spreadsheets. 
+A Windows application made in C# and Windows Forms. It is a prototype project for digital archiving of spreadsheets. 
 
 * For more information, see repository **[CLISC](https://github.com/Asbjoedt/CLISC)**
 
