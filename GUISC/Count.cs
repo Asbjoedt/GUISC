@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 
 namespace GUISC
 {
@@ -15,7 +16,8 @@ namespace GUISC
         // Count spreadsheets
         public string Count_Spreadsheets(string inputdir, string outputdir, bool recurse)
         {
-            Console.WriteLine("COUNT");
+            Function form = new Function();
+            //form.resultsWindow.AppendText("COUNT");
             Console.WriteLine("---");
 
             // Integers

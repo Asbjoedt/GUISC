@@ -23,9 +23,10 @@ namespace GUISC
             InitializeComponent();
         }
 
-        private void Link_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void Link_LinkClicked(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/Asbjoedt/GUISC");
+            // LinkLabelLinkClickedEventArgs
         }
 
         private void InputDir_button_Click(object sender, EventArgs e)
@@ -49,23 +50,22 @@ namespace GUISC
             recurse = true;
         }
 
-        private void Function_picker_SelectedIndexChanged(object sender, EventArgs e)
+        private void functionPicker_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string function = (string)Function_picker.SelectedItem;
-            Console.WriteLine(function);
-            if (function == "1. Count")
+            string function = functionPicker.GetItemText(functionPicker.SelectedItem);
+            if (function == "Count")
             {
                 function = "Count";
             }
-            else if (function == "2. Count & Convert")
+            else if (function == "Count & Convert")
             {
                 function = "CountConvert";
             }
-            else if (function == "3. Count, Convert & Compare")
+            else if (function == "Count, Convert & Compare")
             {
                 function = "CountConvertCompare";
             }
-            else if (function == "4. Count, Convert, Compare & Archive")
+            else if (function == "Count, Convert, Compare & Archive")
             {
                 function = "CountConvertCompareArchive";
             }
@@ -75,6 +75,9 @@ namespace GUISC
         {
             // Disable Run button
             Run.Enabled = false;
+
+            // Clear results window
+            resultsWindow.Clear();
 
             // Begin process timer
             Stopwatch timer = new Stopwatch();
@@ -87,10 +90,12 @@ namespace GUISC
             Archive arc = new Archive();
             Program_Results app = new Program_Results();
 
+            resultsWindow.AppendText(function);
             // Method references
             switch (function)
             {
                 case "Count":
+                    resultsWindow.AppendText(outputdir);
                     cou.Count_Spreadsheets(inputdir, outputdir, recurse);
                     app.Count_Results();
                     break;
@@ -115,19 +120,13 @@ namespace GUISC
                     arc.Archive_Spreadsheets(resultsDirectory, fileList);
                     app.Archive_Results();
                     break;
-
-                default:
-                    Console.WriteLine("Invalid function argument. Function argument must be one these: Count, CountConvert, CountConvertCompare, CountConvertCompareArchive");
-                    break;
             }
 
             // Stop process timer
             timer.Stop();
             TimeSpan time = timer.Elapsed;
             string elapsedTime = String.Format($"{time:dd\\:hh\\:mm\\:ss} (days:hrs:min:sec)");
-            Console.WriteLine("Total process time: " + elapsedTime);
-            Console.WriteLine("CLISC ended");
-            Console.WriteLine("---");
+            resultsWindow.AppendText("CLISC ended" + Environment.NewLine);
 
             // Enable Run button
             Run.Enabled = true;
@@ -140,9 +139,9 @@ namespace GUISC
 
         private void ResultsDir_open_Click(object sender, EventArgs e)
         {
-            if (outputdir != "")
+            if (Directory.Exists(resultsDirectory))
             {
-                System.Diagnostics.Process.Start(outputdir);
+                System.Diagnostics.Process.Start(resultsDirectory);
             }
         }
     }

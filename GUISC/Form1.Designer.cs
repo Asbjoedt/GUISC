@@ -47,7 +47,7 @@
             this.timeWindow = new System.Windows.Forms.TextBox();
             this.timeWindow_label = new System.Windows.Forms.Label();
             this.progressBar_label = new System.Windows.Forms.Label();
-            this.Function_picker = new System.Windows.Forms.ComboBox();
+            this.functionPicker = new System.Windows.Forms.ComboBox();
             this.inputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
             this.outputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
             this.SuspendLayout();
@@ -128,6 +128,7 @@
             this.Link.TabIndex = 12;
             this.Link.TabStop = true;
             this.Link.Text = "GitHub";
+            this.Link.Click += new System.EventHandler(this.Link_LinkClicked);
             // 
             // resultsLog_label
             // 
@@ -205,7 +206,7 @@
             this.resultsDir_open.Name = "resultsDir_open";
             this.resultsDir_open.Size = new System.Drawing.Size(105, 23);
             this.resultsDir_open.TabIndex = 21;
-            this.resultsDir_open.Text = "Open results dir";
+            this.resultsDir_open.Text = "Results directory";
             this.resultsDir_open.UseVisualStyleBackColor = true;
             this.resultsDir_open.Click += new System.EventHandler(this.ResultsDir_open_Click);
             // 
@@ -235,19 +236,20 @@
             this.progressBar_label.TabIndex = 24;
             this.progressBar_label.Text = "Progress bar";
             // 
-            // Function_picker
+            // functionPicker
             // 
-            this.Function_picker.FormattingEnabled = true;
-            this.Function_picker.Items.AddRange(new object[] {
-            "1. Count",
-            "2. Count & Convert",
-            "3. Count, Convert & Compare",
-            "4. Count, Convert, Compare & Archive"});
-            this.Function_picker.Location = new System.Drawing.Point(12, 123);
-            this.Function_picker.Name = "Function_picker";
-            this.Function_picker.Size = new System.Drawing.Size(237, 23);
-            this.Function_picker.TabIndex = 25;
-            this.Function_picker.Text = "Mandatory";
+            this.functionPicker.FormattingEnabled = true;
+            this.functionPicker.Items.AddRange(new object[] {
+            "Count",
+            "Count & Convert",
+            "Count, Convert & Compare",
+            "Count, Convert, Compare & Archive"});
+            this.functionPicker.Location = new System.Drawing.Point(12, 123);
+            this.functionPicker.Name = "functionPicker";
+            this.functionPicker.Size = new System.Drawing.Size(237, 23);
+            this.functionPicker.TabIndex = 25;
+            this.functionPicker.Text = "Mandatory";
+            this.functionPicker.SelectedIndexChanged += new System.EventHandler(this.functionPicker_SelectedIndexChanged);
             // 
             // Function
             // 
@@ -255,7 +257,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(482, 483);
-            this.Controls.Add(this.Function_picker);
+            this.Controls.Add(this.functionPicker);
             this.Controls.Add(this.progressBar_label);
             this.Controls.Add(this.timeWindow_label);
             this.Controls.Add(this.timeWindow);
@@ -302,7 +304,7 @@
         private TextBox timeWindow;
         private Label timeWindow_label;
         private Label progressBar_label;
-        private ComboBox Function_picker;
+        private ComboBox functionPicker;
         private FolderBrowserDialog inputDir_prompt;
         private FolderBrowserDialog outputDir_prompt;
     }
