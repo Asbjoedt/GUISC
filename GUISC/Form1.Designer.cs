@@ -50,11 +50,13 @@
             this.functionPicker = new System.Windows.Forms.ComboBox();
             this.inputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
             this.outputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
+            this.backgroundworker = new System.ComponentModel.BackgroundWorker();
             this.SuspendLayout();
             // 
             // Run
             // 
             this.Run.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.Run.Enabled = false;
             this.Run.Location = new System.Drawing.Point(12, 188);
             this.Run.Name = "Run";
             this.Run.Size = new System.Drawing.Size(75, 23);
@@ -248,8 +250,13 @@
             this.functionPicker.Name = "functionPicker";
             this.functionPicker.Size = new System.Drawing.Size(237, 23);
             this.functionPicker.TabIndex = 25;
-            this.functionPicker.Text = "Mandatory";
+            this.functionPicker.Text = "...";
             this.functionPicker.SelectedIndexChanged += new System.EventHandler(this.functionPicker_SelectedIndexChanged);
+            // 
+            // backgroundworker
+            // 
+            this.backgroundworker.WorkerReportsProgress = true;
+            this.backgroundworker.WorkerSupportsCancellation = true;
             // 
             // Function
             // 
@@ -307,5 +314,6 @@
         private ComboBox functionPicker;
         private FolderBrowserDialog inputDir_prompt;
         private FolderBrowserDialog outputDir_prompt;
+        private System.ComponentModel.BackgroundWorker backgroundworker;
     }
 }
