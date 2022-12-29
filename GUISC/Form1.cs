@@ -2,11 +2,8 @@ using System;
 using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
-using System.Timers;
 using System.Drawing;
 using System.ComponentModel;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
-using DocumentFormat.OpenXml.Vml;
 
 namespace GUISC
 {
@@ -18,7 +15,7 @@ namespace GUISC
         public static string outputdir = "";
         public static string function = "";
         public static bool recurse = false;
-        public static string elapsedTime = "";
+        public static int elapsedTime = 0;
 
         // Primary Windows Forms method
         public Function()
@@ -29,6 +26,9 @@ namespace GUISC
         // Run GUISC methods on click
         public void Run_Click(object sender, EventArgs e)
         {
+            // Begin process timer
+            timer.Start();
+
             // Clear results window
             resultsWindow.Clear();
 
@@ -37,12 +37,6 @@ namespace GUISC
 
             // Disable input buttons
             Disable_Input_Buttons();
-
-            // Begin process timer
-            System.Windows.Forms.Timer timer = new System.Windows.Forms.Timer();
-            timer.Tick += new EventHandler(UpdateTimer);
-            timer.Interval = 1000;
-            timer.Start();
 
             // Run the code
             backgroundworker.RunWorkerAsync();
@@ -191,21 +185,55 @@ namespace GUISC
         {
             // Stop the process
             backgroundworker.CancelAsync();
+            backgroundworker.ReportProgress(0);
 
             // Clear results window
             resultsWindow.Clear();
+            timeWindow.Clear();
 
             // Enable input buttons
             Enable_Input_Buttons();
         }
 
-        // Update progress bar
-        private void backgroundworker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        // Advance and show time
+        private void timer_Tick(object sender, EventArgs e)
         {
-            progressBar.Value = e.ProgressPercentage; 
+            elapsedTime++;
+            timeWindow.Text = elapsedTime.ToString();
+            resultsWindow.AppendText(elapsedTime.ToString());
         }
 
-        // Inform user when application ends
+        // Run primary methods through backgroundworker
+        private void backgroundworker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // 0%
+            backgroundworker.ReportProgress(0);
+
+            for (int i = 0; i < 100; i++)
+            {
+                Thread.Sleep(1000);
+                backgroundworker.ReportProgress(i);
+
+                //Check if there is a request to cancel the process
+                if (backgroundworker.CancellationPending)
+                {
+                    e.Cancel = true;
+                    backgroundworker.ReportProgress(0);
+                    return;
+                }
+            }
+
+            // 100%
+            backgroundworker.ReportProgress(100);
+        }
+
+        // Update progress bar through backgroundworker
+        private void backgroundworker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar.Value = e.ProgressPercentage;
+        }
+
+        // Inform user when application ends through backgroundworker
         private void backgroundworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
@@ -220,13 +248,6 @@ namespace GUISC
             {
                 resultsWindow.AppendText("GUISC ended");
             }
-        }
-
-        //
-        private void UpdateTimer(Object source, EventArgs e)
-        {
-            timeWindow.AppendText(e.ToString());
-            timeWindow.Text = e.ToString();
         }
     }
 }

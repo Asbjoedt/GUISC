@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.Run = new System.Windows.Forms.Button();
             this.inputDir = new System.Windows.Forms.TextBox();
             this.outputDir = new System.Windows.Forms.TextBox();
@@ -51,6 +52,7 @@
             this.inputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
             this.outputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
             this.backgroundworker = new System.ComponentModel.BackgroundWorker();
+            this.timer = new System.Windows.Forms.Timer(this.components);
             this.SuspendLayout();
             // 
             // Run
@@ -257,6 +259,12 @@
             // 
             this.backgroundworker.WorkerReportsProgress = true;
             this.backgroundworker.WorkerSupportsCancellation = true;
+            this.backgroundworker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundworker_DoWork);
+            // 
+            // timer
+            // 
+            this.timer.Interval = 1000;
+            this.timer.Tick += new System.EventHandler(this.timer_Tick);
             // 
             // Function
             // 
@@ -315,5 +323,6 @@
         private FolderBrowserDialog inputDir_prompt;
         private FolderBrowserDialog outputDir_prompt;
         private System.ComponentModel.BackgroundWorker backgroundworker;
+        private System.Windows.Forms.Timer timer;
     }
 }
