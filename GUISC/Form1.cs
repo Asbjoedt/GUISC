@@ -5,6 +5,7 @@ using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
+using System.Runtime.CompilerServices;
 
 namespace GUISC
 {
@@ -17,6 +18,7 @@ namespace GUISC
         public static string function = "";
         public static bool recurse = false;
         TimeSpan time = new TimeSpan();
+        private static AutoResetEvent thread = new AutoResetEvent(true);
 
         // Primary Windows Forms method
         public Function()
@@ -25,7 +27,7 @@ namespace GUISC
         }
 
         // Run GUISC methods on click
-        public void Run_Click(object sender, EventArgs e)
+        private void Run_Click(object sender, EventArgs e)
         {
             // Begin process timer
             timer.Start();
@@ -40,8 +42,11 @@ namespace GUISC
             Disable_Input_Buttons();
 
             // Run the code
+            backgroundworker.RunWorkerCompleted += backgroundworker_RunWorkerCompleted;
             backgroundworker.RunWorkerAsync();
-            //resetEvent.WaitOne();
+            thread.WaitOne();
+
+            await Task.Run(() => backgroundworker.RunWorkerAsync());
 
             // Stop process timer
             timer.Stop();
@@ -50,12 +55,6 @@ namespace GUISC
         // Run primary methods through backgroundworker
         private void backgroundworker_DoWork(object sender, DoWorkEventArgs e)
         {
-            // Do backgroundwork
-            while (!e.Cancel)
-            {
-                Run_Switch();
-            }
-
             //Check if there is a request to cancel the process
             if (backgroundworker.CancellationPending)
             {
@@ -63,8 +62,20 @@ namespace GUISC
                 return;
             }
 
+            // Do backgroundwork
+            while (!e.Cancel)
+            {
+                Run_Switch();
+            }
+
+            // Return if backgroundwork is cancelled
+            if (e.Cancel)
+            {
+                return;
+            }
+
             // Signal that backgroundworker is done
-            //resetEvent.Set();
+            resetEvent.Set();
         }
 
         // Inform user when application ends through backgroundworker
@@ -222,7 +233,7 @@ namespace GUISC
         {
             // Stop the process
             backgroundworker.CancelAsync();
-            backgroundworker.ReportProgress(0);
+            backgroundworker.Dispose();
 
             // Clear results window
             resultsWindow.Clear();

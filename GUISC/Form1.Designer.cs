@@ -41,7 +41,7 @@
             this.Recurse = new System.Windows.Forms.CheckBox();
             this.inputDir_button = new System.Windows.Forms.Button();
             this.outputDir_button = new System.Windows.Forms.Button();
-            this.currentProcessLine = new System.Windows.Forms.TextBox();
+            this.currentLine = new System.Windows.Forms.TextBox();
             this.currentProcessLine_label = new System.Windows.Forms.Label();
             this.resultsDir_open = new System.Windows.Forms.Button();
             this.timeWindow = new System.Windows.Forms.TextBox();
@@ -176,13 +176,13 @@
             this.outputDir_button.UseVisualStyleBackColor = true;
             this.outputDir_button.Click += new System.EventHandler(this.OutputDir_button_Click);
             // 
-            // currentProcessLine
+            // currentLine
             // 
-            this.currentProcessLine.Location = new System.Drawing.Point(12, 217);
-            this.currentProcessLine.Name = "currentProcessLine";
-            this.currentProcessLine.ReadOnly = true;
-            this.currentProcessLine.Size = new System.Drawing.Size(458, 23);
-            this.currentProcessLine.TabIndex = 19;
+            this.currentLine.Location = new System.Drawing.Point(12, 217);
+            this.currentLine.Name = "currentLine";
+            this.currentLine.ReadOnly = true;
+            this.currentLine.Size = new System.Drawing.Size(458, 23);
+            this.currentLine.TabIndex = 19;
             // 
             // currentProcessLine_label
             // 
@@ -239,7 +239,6 @@
             // 
             // backgroundworker
             // 
-            this.backgroundworker.WorkerReportsProgress = true;
             this.backgroundworker.WorkerSupportsCancellation = true;
             this.backgroundworker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundworker_DoWork);
             // 
@@ -259,7 +258,7 @@
             this.Controls.Add(this.timeWindow);
             this.Controls.Add(this.resultsDir_open);
             this.Controls.Add(this.currentProcessLine_label);
-            this.Controls.Add(this.currentProcessLine);
+            this.Controls.Add(this.currentLine);
             this.Controls.Add(this.outputDir_button);
             this.Controls.Add(this.inputDir_button);
             this.Controls.Add(this.Recurse);
@@ -292,7 +291,7 @@
         private CheckBox Recurse;
         private Button inputDir_button;
         private Button outputDir_button;
-        private TextBox currentProcessLine;
+        private TextBox currentLine;
         private Label currentProcessLine_label;
         private Button resultsDir_open;
         private TextBox timeWindow;
