@@ -33,7 +33,6 @@
             this.inputDir = new System.Windows.Forms.TextBox();
             this.outputDir = new System.Windows.Forms.TextBox();
             this.resultsWindow = new System.Windows.Forms.RichTextBox();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
             this.Cancel = new System.Windows.Forms.Button();
             this.Title = new System.Windows.Forms.Label();
             this.Link = new System.Windows.Forms.LinkLabel();
@@ -47,7 +46,6 @@
             this.resultsDir_open = new System.Windows.Forms.Button();
             this.timeWindow = new System.Windows.Forms.TextBox();
             this.timeWindow_label = new System.Windows.Forms.Label();
-            this.progressBar_label = new System.Windows.Forms.Label();
             this.functionPicker = new System.Windows.Forms.ComboBox();
             this.inputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
             this.outputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
@@ -95,14 +93,6 @@
             this.resultsWindow.TabIndex = 3;
             this.resultsWindow.Text = "";
             // 
-            // progressBar
-            // 
-            this.progressBar.Cursor = System.Windows.Forms.Cursors.WaitCursor;
-            this.progressBar.Location = new System.Drawing.Point(395, 173);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(75, 23);
-            this.progressBar.TabIndex = 9;
-            // 
             // Cancel
             // 
             this.Cancel.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -137,11 +127,11 @@
             // resultsLog_label
             // 
             this.resultsLog_label.AutoSize = true;
-            this.resultsLog_label.Location = new System.Drawing.Point(406, 243);
+            this.resultsLog_label.Location = new System.Drawing.Point(403, 243);
             this.resultsLog_label.Name = "resultsLog_label";
-            this.resultsLog_label.Size = new System.Drawing.Size(64, 15);
+            this.resultsLog_label.Size = new System.Drawing.Size(67, 15);
             this.resultsLog_label.TabIndex = 14;
-            this.resultsLog_label.Text = "Results log";
+            this.resultsLog_label.Text = "Process log";
             // 
             // Function_label
             // 
@@ -216,29 +206,21 @@
             // 
             // timeWindow
             // 
-            this.timeWindow.Location = new System.Drawing.Point(395, 129);
+            this.timeWindow.Location = new System.Drawing.Point(395, 173);
             this.timeWindow.Name = "timeWindow";
             this.timeWindow.ReadOnly = true;
             this.timeWindow.Size = new System.Drawing.Size(75, 23);
             this.timeWindow.TabIndex = 22;
+            this.timeWindow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // timeWindow_label
             // 
             this.timeWindow_label.AutoSize = true;
-            this.timeWindow_label.Location = new System.Drawing.Point(405, 111);
+            this.timeWindow_label.Location = new System.Drawing.Point(405, 155);
             this.timeWindow_label.Name = "timeWindow_label";
             this.timeWindow_label.Size = new System.Drawing.Size(65, 15);
             this.timeWindow_label.TabIndex = 23;
             this.timeWindow_label.Text = "Time spent";
-            // 
-            // progressBar_label
-            // 
-            this.progressBar_label.AutoSize = true;
-            this.progressBar_label.Location = new System.Drawing.Point(398, 155);
-            this.progressBar_label.Name = "progressBar_label";
-            this.progressBar_label.Size = new System.Drawing.Size(72, 15);
-            this.progressBar_label.TabIndex = 24;
-            this.progressBar_label.Text = "Progress bar";
             // 
             // functionPicker
             // 
@@ -250,7 +232,7 @@
             "Count, Convert, Compare & Archive"});
             this.functionPicker.Location = new System.Drawing.Point(12, 123);
             this.functionPicker.Name = "functionPicker";
-            this.functionPicker.Size = new System.Drawing.Size(237, 23);
+            this.functionPicker.Size = new System.Drawing.Size(267, 23);
             this.functionPicker.TabIndex = 25;
             this.functionPicker.Text = "...";
             this.functionPicker.SelectedIndexChanged += new System.EventHandler(this.functionPicker_SelectedIndexChanged);
@@ -273,7 +255,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(482, 483);
             this.Controls.Add(this.functionPicker);
-            this.Controls.Add(this.progressBar_label);
             this.Controls.Add(this.timeWindow_label);
             this.Controls.Add(this.timeWindow);
             this.Controls.Add(this.resultsDir_open);
@@ -287,7 +268,6 @@
             this.Controls.Add(this.Link);
             this.Controls.Add(this.Title);
             this.Controls.Add(this.Cancel);
-            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.resultsWindow);
             this.Controls.Add(this.outputDir);
             this.Controls.Add(this.inputDir);
@@ -304,7 +284,6 @@
         private TextBox inputDir;
         private TextBox outputDir;
         private RichTextBox resultsWindow;
-        private ProgressBar progressBar;
         private Button Cancel;
         private Label Title;
         private LinkLabel Link;
@@ -318,7 +297,6 @@
         private Button resultsDir_open;
         private TextBox timeWindow;
         private Label timeWindow_label;
-        private Label progressBar_label;
         private ComboBox functionPicker;
         private FolderBrowserDialog inputDir_prompt;
         private FolderBrowserDialog outputDir_prompt;

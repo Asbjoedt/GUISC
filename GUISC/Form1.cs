@@ -1,9 +1,10 @@
 using System;
-using System.Windows.Forms;
 using System.Diagnostics;
 using System.Threading;
 using System.Drawing;
 using System.ComponentModel;
+using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
 
 namespace GUISC
 {
@@ -15,7 +16,7 @@ namespace GUISC
         public static string outputdir = "";
         public static string function = "";
         public static bool recurse = false;
-        public static int elapsedTime = 0;
+        TimeSpan time = new TimeSpan();
 
         // Primary Windows Forms method
         public Function()
@@ -40,10 +41,47 @@ namespace GUISC
 
             // Run the code
             backgroundworker.RunWorkerAsync();
-            Run_Switch();
+            //resetEvent.WaitOne();
 
             // Stop process timer
             timer.Stop();
+        }
+
+        // Run primary methods through backgroundworker
+        private void backgroundworker_DoWork(object sender, DoWorkEventArgs e)
+        {
+            // Do backgroundwork
+            while (!e.Cancel)
+            {
+                Run_Switch();
+            }
+
+            //Check if there is a request to cancel the process
+            if (backgroundworker.CancellationPending)
+            {
+                e.Cancel = true;
+                return;
+            }
+
+            // Signal that backgroundworker is done
+            //resetEvent.Set();
+        }
+
+        // Inform user when application ends through backgroundworker
+        private void backgroundworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+            {
+                resultsWindow.AppendText("GUISC was cancelled");
+            }
+            else if (e.Error != null)
+            {
+                resultsWindow.AppendText("Error. Details: " + (e.Error as Exception).ToString());
+            }
+            else
+            {
+                resultsWindow.AppendText("GUISC ended");
+            }
         }
 
         // Switch for methods to run
@@ -91,7 +129,6 @@ namespace GUISC
         private void Link_LinkClicked(object sender, EventArgs e)
         {
             System.Diagnostics.Process.Start("https://github.com/Asbjoedt/GUISC");
-            // LinkLabelLinkClickedEventArgs
         }
 
         // Open results directory
@@ -198,56 +235,8 @@ namespace GUISC
         // Advance and show time
         private void timer_Tick(object sender, EventArgs e)
         {
-            elapsedTime++;
-            timeWindow.Text = elapsedTime.ToString();
-            resultsWindow.AppendText(elapsedTime.ToString());
-        }
-
-        // Run primary methods through backgroundworker
-        private void backgroundworker_DoWork(object sender, DoWorkEventArgs e)
-        {
-            // 0%
-            backgroundworker.ReportProgress(0);
-
-            for (int i = 0; i < 100; i++)
-            {
-                Thread.Sleep(1000);
-                backgroundworker.ReportProgress(i);
-
-                //Check if there is a request to cancel the process
-                if (backgroundworker.CancellationPending)
-                {
-                    e.Cancel = true;
-                    backgroundworker.ReportProgress(0);
-                    return;
-                }
-            }
-
-            // 100%
-            backgroundworker.ReportProgress(100);
-        }
-
-        // Update progress bar through backgroundworker
-        private void backgroundworker_ProgressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            progressBar.Value = e.ProgressPercentage;
-        }
-
-        // Inform user when application ends through backgroundworker
-        private void backgroundworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
-        {
-            if (e.Cancelled)
-            {
-                resultsWindow.AppendText("GUISC was cancelled");
-            }
-            else if (e.Error != null)
-            {
-                resultsWindow.AppendText("Error. Details: " + (e.Error as Exception).ToString());
-            }
-            else
-            {
-                resultsWindow.AppendText("GUISC ended");
-            }
+            time = time.Add(TimeSpan.FromSeconds(1));
+            timeWindow.Text = String.Format($"{time:dd\\:hh\\:mm\\:ss}");
         }
     }
 }
