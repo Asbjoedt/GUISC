@@ -18,7 +18,6 @@ namespace GUISC
         public static string function = "";
         public static bool recurse = false;
         TimeSpan time = new TimeSpan();
-        private static AutoResetEvent thread = new AutoResetEvent(true);
 
         // Primary Windows Forms method
         public Function()
@@ -31,7 +30,7 @@ namespace GUISC
         {
             // Begin process timer
             timer.Start();
-
+            
             // Clear results window
             resultsWindow.Clear();
 
@@ -44,9 +43,6 @@ namespace GUISC
             // Run the code
             backgroundworker.RunWorkerCompleted += backgroundworker_RunWorkerCompleted;
             backgroundworker.RunWorkerAsync();
-            thread.WaitOne();
-
-            await Task.Run(() => backgroundworker.RunWorkerAsync());
 
             // Stop process timer
             timer.Stop();
@@ -66,6 +62,9 @@ namespace GUISC
             while (!e.Cancel)
             {
                 Run_Switch();
+
+                // Enable open results dir button
+                resultsDir_open.Enabled = true;
             }
 
             // Return if backgroundwork is cancelled
@@ -73,9 +72,6 @@ namespace GUISC
             {
                 return;
             }
-
-            // Signal that backgroundworker is done
-            resetEvent.Set();
         }
 
         // Inform user when application ends through backgroundworker
@@ -248,6 +244,18 @@ namespace GUISC
         {
             time = time.Add(TimeSpan.FromSeconds(1));
             timeWindow.Text = String.Format($"{time:dd\\:hh\\:mm\\:ss}");
+        }
+
+        // Update process line
+        public void echoLine(string text)
+        {
+            this.currentLine.AppendText(text + Environment.NewLine);
+        }
+
+        // Update process log
+        public void echoLog(string text)
+        {
+            this.resultsWindow.AppendText(text + Environment.NewLine);
         }
     }
 }

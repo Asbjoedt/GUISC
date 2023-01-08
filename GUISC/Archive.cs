@@ -1,5 +1,4 @@
-﻿using DocumentFormat.OpenXml.Spreadsheet;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,6 +47,7 @@ namespace GUISC
             bool? ods_validity = null;
             string ods_conv_checksum = "";
             bool? archive_req_accept = null;
+            Function f = new Function();
 
             // Open CSV file to log archive results
             var csv = new StringBuilder();
@@ -81,9 +81,9 @@ namespace GUISC
                     try
                     {
                         // Inform user
-                        Console.WriteLine(org_filepath); // Inform user of original filepath
+                        f.echoLine(org_filepath); // Inform user of original filepath
                         string folder_number = Path.GetFileName(Path.GetDirectoryName(xlsx_conv_filepath));
-                        Console.WriteLine($"--> Analyzing: {folder_number}\\1.xlsx"); // Inform user of analyzed filepath
+                        f.echoLine($"Analyzing: {folder_number}\\1.xlsx"); // Inform user of analyzed filepath
 
                         // Check .xlsx for archival requirements
                         Archive_Requirements arc = new Archive_Requirements();

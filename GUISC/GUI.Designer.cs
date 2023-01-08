@@ -33,7 +33,7 @@
             this.inputDir = new System.Windows.Forms.TextBox();
             this.outputDir = new System.Windows.Forms.TextBox();
             this.resultsWindow = new System.Windows.Forms.RichTextBox();
-            this.Cancel = new System.Windows.Forms.Button();
+            this.cancelButton = new System.Windows.Forms.Button();
             this.Title = new System.Windows.Forms.Label();
             this.Link = new System.Windows.Forms.LinkLabel();
             this.resultsLog_label = new System.Windows.Forms.Label();
@@ -93,16 +93,16 @@
             this.resultsWindow.TabIndex = 3;
             this.resultsWindow.Text = "";
             // 
-            // Cancel
+            // cancelButton
             // 
-            this.Cancel.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Cancel.Location = new System.Drawing.Point(93, 188);
-            this.Cancel.Name = "Cancel";
-            this.Cancel.Size = new System.Drawing.Size(75, 23);
-            this.Cancel.TabIndex = 10;
-            this.Cancel.Text = "Cancel";
-            this.Cancel.UseVisualStyleBackColor = true;
-            this.Cancel.Click += new System.EventHandler(this.Cancel_Click);
+            this.cancelButton.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.cancelButton.Location = new System.Drawing.Point(93, 188);
+            this.cancelButton.Name = "cancelButton";
+            this.cancelButton.Size = new System.Drawing.Size(75, 23);
+            this.cancelButton.TabIndex = 10;
+            this.cancelButton.Text = "Cancel";
+            this.cancelButton.UseVisualStyleBackColor = true;
+            this.cancelButton.Click += new System.EventHandler(this.Cancel_Click);
             // 
             // Title
             // 
@@ -196,6 +196,7 @@
             // resultsDir_open
             // 
             this.resultsDir_open.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.resultsDir_open.Enabled = false;
             this.resultsDir_open.Location = new System.Drawing.Point(174, 188);
             this.resultsDir_open.Name = "resultsDir_open";
             this.resultsDir_open.Size = new System.Drawing.Size(105, 23);
@@ -252,6 +253,7 @@
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(482, 483);
             this.Controls.Add(this.functionPicker);
             this.Controls.Add(this.timeWindow_label);
@@ -266,7 +268,7 @@
             this.Controls.Add(this.resultsLog_label);
             this.Controls.Add(this.Link);
             this.Controls.Add(this.Title);
-            this.Controls.Add(this.Cancel);
+            this.Controls.Add(this.cancelButton);
             this.Controls.Add(this.resultsWindow);
             this.Controls.Add(this.outputDir);
             this.Controls.Add(this.inputDir);
@@ -283,7 +285,7 @@
         private TextBox inputDir;
         private TextBox outputDir;
         private RichTextBox resultsWindow;
-        private Button Cancel;
+        private Button cancelButton;
         private Label Title;
         private LinkLabel Link;
         private Label resultsLog_label;
