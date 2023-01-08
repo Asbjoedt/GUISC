@@ -103,27 +103,27 @@ namespace GUISC
             Conversion con = new Conversion();
             Compare com = new Compare();
             Archive arc = new Archive();
-            Program_Results app = new Program_Results();
+            Results res = new Results();
 
             // Method references
             switch (function)
             {
                 case "Count":
                     cou.Count_Spreadsheets(inputdir, outputdir, recurse);
-                    app.Count_Results();
+                    res.Count_Results();
                     break;
 
                 case "CountConvert":
                     resultsDirectory = cou.Count_Spreadsheets(inputdir, outputdir, recurse);
                     con.Convert_Spreadsheets(function, inputdir, recurse, resultsDirectory);
-                    app.Convert_Results();
+                    res.Convert_Results();
                     break;
 
                 case "CountConvertCompare":
                     resultsDirectory = cou.Count_Spreadsheets(inputdir, outputdir, recurse);
                     List<fileIndex> fileList = con.Convert_Spreadsheets(function, inputdir, recurse, resultsDirectory);
                     com.Compare_Spreadsheets(function, resultsDirectory, fileList);
-                    app.Compare_Results();
+                    res.Compare_Results();
                     break;
 
                 case "CountConvertCompareArchive":
@@ -131,7 +131,7 @@ namespace GUISC
                     fileList = con.Convert_Spreadsheets(function, inputdir, recurse, resultsDirectory);
                     com.Compare_Spreadsheets(function, resultsDirectory, fileList);
                     arc.Archive_Spreadsheets(resultsDirectory, fileList);
-                    app.Archive_Results();
+                    res.Archive_Results();
                     break;
             }
         }

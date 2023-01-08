@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace GUISC
 {
-    public partial class Spreadsheet
+    public partial class Results
     {
         // Create public data types
         public static string Results_Directory = "";
@@ -18,17 +18,17 @@ namespace GUISC
             return value.ToString("yyyy.MM.dd");
         }
         public string dateStamp = GetTimestamp(DateTime.Now);
-        
+
         // Create name for new results directory
-        public string Create_Directory_Results(string outputdir)
+        public string Create_Results_Directory(string outputdir)
         {
             // Identify available name for results directory
             int results_directory_number = 1;
-            Results_Directory = outputdir + "\\GUISC_" + dateStamp;
+            Results_Directory = outputdir + "\\CLISC_" + dateStamp;
             while (Directory.Exists(Results_Directory) || File.Exists(Results_Directory + ".zip"))
             {
                 results_directory_number++;
-                Results_Directory = outputdir + "\\GUISC_" + dateStamp + "_" + results_directory_number;
+                Results_Directory = outputdir + "\\CLISC_" + dateStamp + "_" + results_directory_number;
             }
             // Create results directory
             DirectoryInfo OutputDir = Directory.CreateDirectory(Results_Directory);

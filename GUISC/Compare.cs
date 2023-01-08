@@ -4,6 +4,7 @@ using System.IO.Enumeration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.ComponentModel;
 
 namespace GUISC
 {
@@ -20,19 +21,18 @@ namespace GUISC
             Console.WriteLine("COMPARE");
             Console.WriteLine("---");
 
-            // Data types
-            string error_message = "Beyond Compare 4 is not installed in filepath: C:\\Program Files\\Beyond Compare 4";
-
             // Open CSV file to log results
             var csv = new StringBuilder();
-            var newLine0 = string.Format($"Original Filepath;XLSX Filepath;Comparison Success");
+            var newLine0 = string.Format($"Original Filepath;XLSX Filepath;Comparison Success;Error message");
             csv.AppendLine(newLine0);
 
-            if (File.Exists(@"C:\\Program Files\\Beyond Compare 4\\BCompare.exe"))
+            try
             {
                 foreach (fileIndex entry in File_List)
                 {
+                    // Define data types
                     bool? compare_success = null;
+                    string? error_message = null;
                     // Get information from list
                     string org_filepath = entry.Org_Filepath;
                     string copy_filepath = entry.Copy_Filepath;
@@ -41,7 +41,12 @@ namespace GUISC
                     // Compare workbook differences
                     if (File.Exists(xlsx_filepath) && Path.GetExtension(org_filepath).ToLower() != ".xlsb")
                     {
+                        // Inform user of comparison
+                        Console.WriteLine(org_filepath);
+                        Console.WriteLine($"--> Comparing to: {xlsx_filepath}");
+
                         int return_code;
+
                         if (function == "CountConvertCompareArchive")
                         {
                             // Compare workbooks using external app Beyond Compare 4
@@ -52,53 +57,53 @@ namespace GUISC
                             return_code = Compare_Workbook(org_filepath, xlsx_filepath);
                         }
 
-                        // Inform user of comparison
-                        Console.WriteLine(org_filepath);
-                        Console.WriteLine($"--> Comparing to: {xlsx_filepath}");
                         if (return_code == 0 || return_code == 1 || return_code == 2)
                         {
                             numTOTAL_compare++;
                             compare_success = true;
-                            Console.WriteLine("--> Spreadsheets identical: " + compare_success);
+                            Console.WriteLine("--> Cell values identical: " + compare_success);
                         }
                         if (return_code == 12 || return_code == 13 || return_code == 14)
                         {
                             numTOTAL_compare++;
                             numTOTAL_diff++;
                             compare_success = false;
-                            Console.WriteLine("--> Spreadsheets identical: " + compare_success);
+                            Console.WriteLine("--> Cell values identical: " + compare_success);
                         }
                         if (return_code == 11)
                         {
                             compare_success = null;
+                            error_message = "Original file cannot be compared";
                             Console.WriteLine("--> Original file cannot be compared");
                         }
                         if (return_code == 100)
                         {
                             compare_success = null;
+                            error_message = "Unknown error";
                             Console.WriteLine("--> Unknown error");
                         }
                         if (return_code == 104)
                         {
                             compare_success = null;
+                            error_message = "Beyond Compare 4 trial period expired";
                             Console.WriteLine("--> Beyond Compare 4 trial period expired");
                         }
 
                         // Output result in open CSV file
-                        var newLine1 = string.Format($"{org_filepath};{xlsx_filepath};{compare_success}");
+                        var newLine1 = string.Format($"{org_filepath};{xlsx_filepath};{compare_success};{error_message}");
                         csv.AppendLine(newLine1);
                     }
                 }
             }
-            else
+            catch (Win32Exception)
             {
-                Console.WriteLine(error_message);
+                Console.WriteLine("Beyond Compare 4 is not installed");
                 Console.WriteLine("Comparison ended");
             }
 
             // Close CSV file to log results
-            Spreadsheet.CSV_filepath = Results_Directory + "\\3_Compare_Results.csv";
-            File.WriteAllText(Spreadsheet.CSV_filepath, csv.ToString());
+            Results.CSV_filepath = Results_Directory + "\\3_Compare_Results.csv";
+            File.WriteAllText(Results.CSV_filepath, csv.ToString(), Encoding.UTF8);
         }
     }
 }

@@ -13,6 +13,97 @@ namespace GUISC
 {
     public partial class Conversion
     {
+        // Convert spreadsheets from OpenDocument file formats using LibreOffice
+        public bool Convert_LibreOffice(string function, string input_filepath, string output_filepath, string output_folder)
+        {
+            bool convert_success = false;
+
+            // Use LibreOffice command line for conversion
+            // --> LibreOffice has bug, so output filepath cannot be specified. Only the output folder can be specified
+            Process app = new Process();
+            string? dir = null;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // If app is run on Windows
+            {
+                dir = Environment.GetEnvironmentVariable("LibreOffice");
+            }
+            if (dir != null)
+            {
+                app.StartInfo.FileName = dir;
+            }
+            else
+            {
+                app.StartInfo.FileName = "C:\\Program Files\\LibreOffice\\program\\scalc.exe";
+            }
+            app.StartInfo.Arguments = "--headless --convert-to xlsx " + input_filepath + " --outdir " + output_folder;
+            app.Start();
+            app.WaitForExit();
+            app.Close();
+
+            // Because of previous bug, we must rename converted spreadsheet to meet archiving requirements, if selected
+            if (function == "CountConvertCompareArchive")
+            {
+                string[] filename = Directory.GetFiles(output_folder, "*.xlsx");
+                if (filename.Length > 0)
+                {
+                    // Rename converted spreadsheet
+                    string old_filename = filename[0];
+                    string new_filename = output_folder + "\\1.xlsx";
+                    File.Move(old_filename, new_filename);
+                }
+            }
+            // Report success if file exists - BUG: password protected ODS are returned as true, if not for below check
+            if (File.Exists(output_filepath))
+            {
+                convert_success = true;
+            }
+            return convert_success;
+        }
+
+        // Convert spreadsheets to OpenDocument file formats using LibreOffice
+        public bool Convert_to_OpenDocument(string input_filepath, string output_folder)
+        {
+            bool convert_success = false;
+
+            // Use LibreOffice command line for conversion
+            // --> LibreOffice has bug, so output filepath cannot be specified. Only the output folder can be specified
+            Process app = new Process();
+            string? dir = null;
+            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // If app is run on Windows
+            {
+                dir = Environment.GetEnvironmentVariable("LibreOffice");
+            }
+            if (dir != null)
+            {
+                app.StartInfo.FileName = dir;
+            }
+            else
+            {
+                app.StartInfo.FileName = "C:\\Program Files\\LibreOffice\\program\\scalc.exe";
+            }
+            app.StartInfo.Arguments = "--headless --convert-to ods " + input_filepath + " --outdir " + output_folder;
+            app.Start();
+            app.WaitForExit();
+            app.Close();
+
+            // Because of previous bug, we must rename converted spreadsheet to meet archiving requirements, if selected
+            string[] filename = Directory.GetFiles(output_folder, "*.ods");
+            if (filename.Length > 0)
+            {
+                // Rename converted spreadsheet
+                string old_filename = filename[0];
+                string new_filename = output_folder + "\\1.ods";
+                File.Move(old_filename, new_filename);
+
+                // Report success if file exists - BUG: password protected ODS are returned as true, if not for below check
+                if (File.Exists(new_filename))
+                {
+                    convert_success = true;
+                    return convert_success;
+                }
+            }
+            return convert_success;
+        }
+
         // Convert spreadsheets from OpenDocument file formats using Excel Interop - DOES NOT SUPPORT .FODS
         public bool Convert_from_OpenDocument_ExcelInterop(string input_filepath, string output_filepath)
         {
@@ -55,118 +146,8 @@ namespace GUISC
                 Marshal.ReleaseComObject(app); // Delete Excel task in task manager
             }
 
-            convert_success = true; // Mark as succesful
+            convert_success = true; // Mark as successful
             return convert_success; // Report success
-        }
-
-        // Convert spreadsheets from OpenDocument file formats using LibreOffice
-        public bool Convert_from_OpenDocument(string function, string input_filepath, string file_folder)
-        {
-            // Use LibreOffice command line for conversion
-            // --> LibreOffice has bug, so direct filepath to new converted spreadsheet cannot be specified. Only the folder can be specified
-            Process app = new Process();
-            string? dir = null;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // If app is run on Windows
-            {
-                dir = Environment.GetEnvironmentVariable("LibreOffice");
-            }
-            if (dir != null)
-            {
-                app.StartInfo.FileName = dir;
-            }
-            else
-            {
-                app.StartInfo.FileName = "C:\\Program Files\\LibreOffice\\program\\scalc.exe";
-            }
-            app.StartInfo.Arguments = "--headless --convert-to xlsx " + input_filepath + " --outdir " + file_folder;
-            app.Start();
-            app.WaitForExit();
-            app.Close();
-
-            bool convert_success;
-
-            // Because of previous bug, we must rename converted spreadsheet to meet archiving requirements
-            if (function == "count&convert&compare&archive")
-            {
-                string[] filename = Directory.GetFiles(file_folder, "*.xlsx");
-                if (filename.Length > 0)
-                {
-                    // Rename converted spreadsheet
-                    string old_filename = filename[0];
-                    string new_filename = file_folder + "\\1.xlsx";
-                    File.Move(old_filename, new_filename);
-                    // Transform datatypes
-                    xlsx_conv_extension = ".xlsx";
-                    xlsx_conv_filename = "1" + xlsx_conv_extension;
-                    xlsx_conv_filepath = file_folder + "\\" + xlsx_conv_filename;
-
-                    // Report success if file exists - BUG: password protected ODS are returned as true, if not for below check
-                    if (File.Exists(xlsx_conv_filepath))
-                    {
-                        convert_success = true;
-                        return convert_success;
-                    }
-                    else
-                    {
-                        convert_success = false;
-                        return convert_success;
-                    }
-                }
-            }
-            convert_success = false;
-            return convert_success;
-        }
-
-        // Convert spreadsheets to OpenDocument file formats using LibreOffice
-        public bool Convert_to_OpenDocument(string input_filepath, string file_folder)
-        {
-            // Use LibreOffice command line for conversion
-            // --> LibreOffice has bug, so direct filepath to new converted spreadsheet cannot be specified. Only the folder can be specified
-            Process app = new Process();
-            string? dir = null;
-            if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // If app is run on Windows
-            {
-                dir = Environment.GetEnvironmentVariable("LibreOffice");
-            }
-            if (dir != null)
-            {
-                app.StartInfo.FileName = dir;
-            }
-            else
-            {
-                app.StartInfo.FileName = "C:\\Program Files\\LibreOffice\\program\\scalc.exe";
-            }
-            app.StartInfo.Arguments = "--headless --convert-to ods " + input_filepath + " --outdir " + file_folder;
-            app.Start();
-            app.WaitForExit();
-            app.Close();
-
-            bool convert_success;
-
-            // Because of previous bug, we must rename converted spreadsheet to meet archiving requirements
-            string[] filename = Directory.GetFiles(file_folder, "*.ods");
-            if (filename.Length > 0)
-            {
-                // Rename converted spreadsheet
-                string old_filename = filename[0];
-                string new_filename = file_folder + "\\1.ods";
-                File.Move(old_filename, new_filename);
-
-                // Report success if file exists - BUG: password protected ODS are returned as true, if not for below check
-                if (File.Exists(new_filename))
-                {
-                    convert_success = true;
-                    return convert_success;
-                }
-                else
-                {
-                    convert_success = false;
-                    return convert_success;
-                }
-            }
-            convert_success = false;
-            return convert_success;
         }
     }
 }
-
