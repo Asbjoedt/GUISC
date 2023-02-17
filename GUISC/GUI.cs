@@ -248,8 +248,9 @@ namespace GUISC
 
         // Update process line
         public void echoLine(string text)
-        {
-            this.currentLine.AppendText(text + Environment.NewLine);
+        { 
+            this.currentLine.AppendText(Environment.NewLine);
+            this.currentLine.AppendText(text);
         }
 
         // Update process log

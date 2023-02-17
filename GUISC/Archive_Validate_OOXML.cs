@@ -39,6 +39,7 @@ namespace GUISC
         public List<Validation> Validate_OOXML(string org_filepath, string filepath, string Results_Directory)
         {
             List<Validation> results = new List<Validation>();
+            Function f = new Function();
 
             using (var spreadsheet = SpreadsheetDocument.Open(filepath, false))
             {
@@ -50,23 +51,12 @@ namespace GUISC
 
                 if (validation_errors.Any()) // If errors, inform user & return results
                 {
-                    Console.WriteLine($"--> Validate: File format is invalid - Spreadsheet has {error_count} validation errors");
+                    f.echoLine($"Validate: File format is invalid - Spreadsheet has {error_count} validation errors");
 
                     foreach (var error in validation_errors)
                     {
                         error_number++;
-                        Console.WriteLine("--> Error " + error_number);
-                        Console.WriteLine("----> Id: " + error.Id);
-                        Console.WriteLine("----> Description: " + error.Description);
-                        Console.WriteLine("----> Error type: " + error.ErrorType);
-                        Console.WriteLine("----> Node: " + error.Node);
-                        Console.WriteLine("----> Path: " + error.Path.XPath);
-                        Console.WriteLine("----> Part: " + error.Part.Uri);
-                        if (error.RelatedNode != null)
-                        {
-                            Console.WriteLine("----> Related Node: " + error.RelatedNode);
-                            Console.WriteLine("----> Related Node Inner Text: " + error.RelatedNode.InnerText);
-                        }
+                        f.echoLine("Error " + error_number);
 
                         string? er_rel_1 = "";
                         string? er_rel_2 = "";
@@ -85,7 +75,7 @@ namespace GUISC
                 }
                 else
                 {
-                    Console.WriteLine("--> Validate: File format is valid"); // Inform user
+                    f.echoLine("Validate: File format is valid"); // Inform user
 
                     Archive.valid_files++; // Add to number of valid files
 
@@ -101,6 +91,7 @@ namespace GUISC
         public List<Validation> Validate_OOXML_Hack(string org_filepath, string filepath, string Results_Directory)
         {
             List<Validation> results = new List<Validation>();
+            Function f = new Function();
 
             using (var spreadsheet = SpreadsheetDocument.Open(filepath, false))
             {
@@ -114,7 +105,7 @@ namespace GUISC
                 {
                     if (error_count >= 45)
                     {
-                        Console.WriteLine($"--> Validate: File format is valid - {error_count} incorrectly reported validation errors have been suppressed"); // Inform user
+                        f.echoLine($"Validate: File format is valid - {error_count} incorrectly reported validation errors have been suppressed"); // Inform user
 
                         Archive.valid_files++; // Add to number of valid files
 
@@ -127,7 +118,7 @@ namespace GUISC
                     }
                     else
                     {
-                        Console.WriteLine($"--> Validate: File format is invalid - Spreadsheet has {error_count} validation errors");
+                        f.echoLine($"Validate: File format is invalid - Spreadsheet has {error_count} validation errors");
 
                         foreach (var error in validation_errors)
                         {
@@ -140,18 +131,7 @@ namespace GUISC
                                     break;
                                 default:
                                     error_number++;
-                                    Console.WriteLine("--> Error " + error_number);
-                                    Console.WriteLine("----> Id: " + error.Id);
-                                    Console.WriteLine("----> Description: " + error.Description);
-                                    Console.WriteLine("----> Error type: " + error.ErrorType);
-                                    Console.WriteLine("----> Node: " + error.Node);
-                                    Console.WriteLine("----> Path: " + error.Path.XPath);
-                                    Console.WriteLine("----> Part: " + error.Part.Uri);
-                                    if (error.RelatedNode != null)
-                                    {
-                                        Console.WriteLine("----> Related Node: " + error.RelatedNode);
-                                        Console.WriteLine("----> Related Node Inner Text: " + error.RelatedNode.InnerText);
-                                    }
+                                    f.echoLine("Error " + error_number);
 
                                     string? er_rel_1 = "";
                                     string? er_rel_2 = "";
@@ -172,7 +152,7 @@ namespace GUISC
                 }
                 else
                 {
-                    Console.WriteLine("--> Validate: File format is valid"); // Inform user
+                    f.echoLine("Validate: File format is valid"); // Inform user
 
                     Archive.valid_files++; // Add to number of valid files
 

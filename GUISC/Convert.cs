@@ -40,9 +40,11 @@ namespace GUISC
         // Convert spreadsheets method
         public List<fileIndex> Convert_Spreadsheets(string function, string inputdir, bool recurse, string Results_Directory)
         {
-            Console.WriteLine("---");
-            Console.WriteLine("CONVERT");
-            Console.WriteLine("---");
+            Function f = new Function();
+
+            f.echoLog("---");
+            f.echoLog("CONVERT");
+            f.echoLog("---");
 
             // Open CSV file to log results
             var csv = new StringBuilder();
@@ -105,7 +107,7 @@ namespace GUISC
                 }
 
                 // Inform user of original filepath
-                Console.WriteLine(org_filepath);
+                f.echoLine(org_filepath);
 
                 // Convert spreadsheet
                 try
@@ -160,7 +162,7 @@ namespace GUISC
                         case ".xltm":
                         case ".xltx":
                             // Convert to .xlsx Transitional using Open XML SDK
-                            convert_success = Convert_to_OOXML_Transitional(copy_filepath, output_filepath);
+                            convert_success = ConvertToXLSX(copy_filepath, output_filepath);
                             break;
                     }
                 }
@@ -207,7 +209,7 @@ namespace GUISC
                 finally
                 {
                     // Inform user
-                    Console.WriteLine($"--> Conversion: {convert_success}");
+                    f.echoLine($"Conversion: {convert_success}");
 
                     // If conversion success
                     if (convert_success == true)
@@ -216,7 +218,7 @@ namespace GUISC
                         numCOMPLETE++;
 
                         // Inform user
-                        Console.WriteLine($"--> File saved to: {output_filepath}");
+                        f.echoLine($"File saved to: {output_filepath}");
 
                         //Transform XLSX data types
                         xlsx_conv_extension = Path.GetExtension(output_filepath);
@@ -240,7 +242,13 @@ namespace GUISC
                         {
                             error_message = error_messages[1];
                         }
-                        Console.WriteLine($"--> {error_message}");
+                        f.echoLine($"{error_message}");
+
+                        // Delete converted spreadsheet (it has errors), if it exists
+                        if (File.Exists(output_filepath))
+                        {
+                            File.Delete(output_filepath);
+                        }
                     }
                 }
 

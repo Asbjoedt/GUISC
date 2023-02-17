@@ -1,24 +1,18 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.IO;
 using System.IO.Packaging;
 using System.Linq;
-using System.Runtime.InteropServices;
 using System.Text;
-using System.Threading.Tasks;
 using DocumentFormat.OpenXml;
-using DocumentFormat.OpenXml.CustomXmlSchemaReferences;
-using DocumentFormat.OpenXml.Drawing;
-using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace GUISC
 {
     public partial class Conversion
     {
-        // Convert to .xlsx Transitional - DOES NOT SUPPORT STRICT TO TRANSITIONAL
-        public bool Convert_to_OOXML_Transitional(string input_filepath, string output_filepath)
+        // Convert to .xlsx Transitional
+        public bool ConvertToXLSX(string input_filepath, string output_filepath)
         {
             bool convert_success = false;
 
@@ -29,8 +23,13 @@ namespace GUISC
                 stream.Write(byteArray, 0, (int)byteArray.Length);
                 using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(stream, true))
                 {
-                    Handle_Protection(spreadsheet, input_filepath); // Try to remove read-only and filesharing protection
-                    spreadsheet.ChangeDocumentType(SpreadsheetDocumentType.Workbook); // Convert to different file format
+                    // Check for certain protection
+                    if (spreadsheet.WorkbookPart.Workbook.WorkbookProtection != null || spreadsheet.WorkbookPart.Workbook.FileSharing != null)
+                    {
+                        return convert_success;
+                    }
+                    //Convert
+                    spreadsheet.ChangeDocumentType(SpreadsheetDocumentType.Workbook);
                 }
                 File.WriteAllBytes(output_filepath, stream.ToArray());
             }
@@ -45,7 +44,7 @@ namespace GUISC
 
         // Work in progress
         // Convert .xlsx Strict to Transitional conformance
-        public void Convert_Strict_to_Transitional(string input_filepath)
+        public void ConvertStrictToTransitional(string input_filepath)
         {
             // Create list of namespaces
             List<namespaceIndex> namespaces = namespaceIndex.Create_Namespaces_Index();
@@ -63,17 +62,6 @@ namespace GUISC
                     // Remove vml urn namespace from workbook.xml
                     workbook.RemoveNamespaceDeclaration("v");
                 }
-            }
-        }
-
-        // Work in progress
-        // Remove write or filesharing protection from spreadsheet in cases of no password
-        public void Handle_Protection(SpreadsheetDocument spreadsheet, string input_filepath)
-        {
-            if (spreadsheet.WorkbookPart.Workbook.WorkbookProtection != null || spreadsheet.WorkbookPart.Workbook.FileSharing != null)
-            {
-                // Use Excel Interop to convert the spreadsheet
-                Convert_ExcelInterop(input_filepath, input_filepath);
             }
         }
     }

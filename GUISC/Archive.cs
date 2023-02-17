@@ -27,10 +27,6 @@ namespace GUISC
         // Archive the spreadsheets according to advanced archival requirements
         public void Archive_Spreadsheets(string Results_Directory, List<fileIndex> File_List)
         {
-            Console.WriteLine("---");
-            Console.WriteLine("ARCHIVE");
-            Console.WriteLine("---");
-
             string file_folder = "";
             string org_filepath = "";
             string copy_filepath = "";
@@ -48,6 +44,11 @@ namespace GUISC
             string ods_conv_checksum = "";
             bool? archive_req_accept = null;
             Function f = new Function();
+
+            // Inform user of beginning of archiving
+            f.echoLog("---");
+            f.echoLog("ARCHIVE");
+            f.echoLog("---");
 
             // Open CSV file to log archive results
             var csv = new StringBuilder();
@@ -183,15 +184,16 @@ namespace GUISC
 
                     // Calculate checksum
                     xlsx_conv_checksum = Calculate_MD5(xlsx_conv_filepath);
-                    Console.WriteLine("--> Calculate: MD5 checksum was calculated");
+                    f.echoLine("Calculate: MD5 checksum was calculated");
+                    f.echoLine("Calculate: MD5 checksum was calculated");
                 }
                 if (entry.ODS_Conv_Extension == ".ods")
                 {
                     // Inform user of .ods operation
                     string folder_number = Path.GetFileName(Path.GetDirectoryName(ods_conv_filepath));
-                    Console.WriteLine($"--> Copy saved to: {folder_number}\\1.ods");
-                    Console.WriteLine($"--> Analyzing: {folder_number}\\1.ods");
-                    Console.WriteLine($"--> Archival requirements identical to {folder_number}\\1.xlsx");
+                    f.echoLine($"Copy saved to: {folder_number}\\1.ods");
+                    f.echoLine($"Analyzing: {folder_number}\\1.ods");
+                    f.echoLine($"Archival requirements identical to {folder_number}\\1.xlsx");
 
                     // Make an .ods copy
                     Conversion con = new Conversion();
@@ -203,7 +205,7 @@ namespace GUISC
 
                     // Calculate checksum
                     ods_conv_checksum = Calculate_MD5(ods_conv_filepath);
-                    Console.WriteLine("--> Calculate: MD5 checksum was calculated");
+                    f.echoLine("Calculate: MD5 checksum was calculated");
                 }
 
                 // Calculate checksums for original and copied files
@@ -240,20 +242,20 @@ namespace GUISC
             File.WriteAllText(Results.CSV_filepath, csv.ToString(), Encoding.UTF8);
 
             // Zip the output directory
-            Console.WriteLine("---");
-            Console.WriteLine("--> ZIP DIRECTORY");
-            Console.WriteLine("---");
+            f.echoLine("---");
+            f.echoLine("ZIP DIRECTORY");
+            f.echoLine("---");
             try
             {
                 ZIP_Directory(Results_Directory);
                 string zip_path = Results_Directory + ".zip";
-                Console.WriteLine($"The zipped archive directory was saved to: {zip_path}");
-                Console.WriteLine("Zip ended");
+                f.echoLine($"The zipped archive directory was saved to: {zip_path}");
+                f.echoLine("Zip ended");
             }
             catch (SystemException)
             {
-                Console.WriteLine("Zip failed");
-                Console.WriteLine("Zip ended");
+                f.echoLine("Zip failed");
+                f.echoLine("Zip ended");
             }
         }
     }

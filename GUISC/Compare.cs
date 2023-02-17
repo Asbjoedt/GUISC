@@ -13,13 +13,14 @@ namespace GUISC
         // Comparison data types
         public static int numTOTAL_compare = 0;
         public static int numTOTAL_diff = 0;
+        Function f = new Function();
 
         // Compare spreadsheets
         public void Compare_Spreadsheets(string function, string Results_Directory, List<fileIndex> File_List)
         {
-            Console.WriteLine("---");
-            Console.WriteLine("COMPARE");
-            Console.WriteLine("---");
+            f.echoLog("---");
+            f.echoLog("COMPARE");
+            f.echoLog("---");
 
             // Open CSV file to log results
             var csv = new StringBuilder();
@@ -42,8 +43,8 @@ namespace GUISC
                     if (File.Exists(xlsx_filepath) && Path.GetExtension(org_filepath).ToLower() != ".xlsb")
                     {
                         // Inform user of comparison
-                        Console.WriteLine(org_filepath);
-                        Console.WriteLine($"--> Comparing to: {xlsx_filepath}");
+                        f.echoLine(org_filepath);
+                        f.echoLine($"Comparing to: {xlsx_filepath}");
 
                         int return_code;
 
@@ -61,32 +62,32 @@ namespace GUISC
                         {
                             numTOTAL_compare++;
                             compare_success = true;
-                            Console.WriteLine("--> Cell values identical: " + compare_success);
+                            f.echoLine("Cell values identical: " + compare_success);
                         }
                         if (return_code == 12 || return_code == 13 || return_code == 14)
                         {
                             numTOTAL_compare++;
                             numTOTAL_diff++;
                             compare_success = false;
-                            Console.WriteLine("--> Cell values identical: " + compare_success);
+                            f.echoLine("Cell values identical: " + compare_success);
                         }
                         if (return_code == 11)
                         {
                             compare_success = null;
                             error_message = "Original file cannot be compared";
-                            Console.WriteLine("--> Original file cannot be compared");
+                            f.echoLine(error_message);
                         }
                         if (return_code == 100)
                         {
                             compare_success = null;
                             error_message = "Unknown error";
-                            Console.WriteLine("--> Unknown error");
+                            f.echoLine(error_message);
                         }
                         if (return_code == 104)
                         {
                             compare_success = null;
                             error_message = "Beyond Compare 4 trial period expired";
-                            Console.WriteLine("--> Beyond Compare 4 trial period expired");
+                            f.echoLog(error_message);
                         }
 
                         // Output result in open CSV file
@@ -97,8 +98,8 @@ namespace GUISC
             }
             catch (Win32Exception)
             {
-                Console.WriteLine("Beyond Compare 4 is not installed");
-                Console.WriteLine("Comparison ended");
+                f.echoLog("Beyond Compare 4 is not installed");
+                f.echoLog("Comparison ended");
             }
 
             // Close CSV file to log results

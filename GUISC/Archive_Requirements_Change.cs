@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.IO.Packaging;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,6 @@ using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Office2013.ExcelAc;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace GUISC
 {
@@ -17,75 +17,107 @@ namespace GUISC
         // Change .xlsx according to archival requirements
         public void Change_XLSX_Requirements(List<Archive_Requirements> arcReq, string filepath)
         {
+            Function f = new Function();
+
             foreach (var item in arcReq)
             {
                 if (item.Metadata == true)
                 {
-                    //Remove_Metadata(filepath);
-                    //Console.WriteLine("--> Change: File property information was removed and saved to sidecar file");
+                    //int success = Remove_Metadata(filepath);
+                    //f.echoLine($"--> Change: {success} file property information were removed and saved to sidecar file");
                 }
                 if (item.Conformance == true)
                 {
-                    Change_Conformance_ExcelInterop(filepath);
-                    Console.WriteLine("--> Change: Conformance was changed to Strict");
+                    Change_ConformanceToStrict_ExcelInterop(filepath);
+                    f.echoLine("Change: Conformance was changed to Strict");
                 }
                 if (item.Connections > 0)
                 {
-                    Remove_DataConnections(filepath);
-                    Console.WriteLine($"--> Change: {item.Connections} data connections were removed");
+                    int success = Remove_DataConnections(filepath);
+                    f.echoLine($"Change: {success} data connections were removed");
                 }
                 if (item.CellReferences > 0)
                 {
-                    Remove_ExternalCellReferences(filepath);
-                    Console.WriteLine($"--> Change: {item.CellReferences} cell references were removed");
+                    int success = Remove_ExternalCellReferences(filepath);
+                    f.echoLine($"--> Change: {success} cell references were removed");
                 }
                 if (item.RTDFunctions > 0)
                 {
-                    Remove_RTDFunctions(filepath);
-                    Console.WriteLine($"--> Change: {item.RTDFunctions} RTD functions were removed");
+                    int success = Remove_RTDFunctions(filepath);
+                    f.echoLine($"--> Change: {success} RTD functions were removed");
                 }
                 if (item.PrinterSettings > 0)
                 {
-                    Remove_PrinterSettings(filepath);
-                    Console.WriteLine($"--> Change: {item.PrinterSettings} printer settings were removed");
+                    int success = Remove_PrinterSettings(filepath);
+                    f.echoLine($"--> Change: {success} printer settings were removed");
                 }
                 if (item.ExternalObj > 0)
                 {
-                    Remove_ExternalObjects(filepath);
-                    Console.WriteLine($"--> Change: {item.ExternalObj} external objects were removed");
-                }
-                if (item.ActiveSheet == true)
-                {
-                    Activate_FirstSheet(filepath);
-                    Console.WriteLine("--> Change: First sheet was activated");
-                }
-                if (item.AbsolutePath == true)
-                {
-                    Remove_AbsolutePath(filepath);
-                    Console.WriteLine("--> Change: Absolute path to local directory was removed");
+                    Tuple<int, int> success = CopyAndRemove_ExternalObjects(filepath);
+                    if (success.Item1 > 0)
+                    {
+                        f.echoLine($"--> Change: {success.Item1} external object references were copied to new subfolder and removed");
+                    }
+                    if (success.Item2 > 0)
+                    {
+                        f.echoLine($"--> ChangeError: {success.Item2} external object references were removed but NOT copied to new subfolder \"External objects\"");
+                    }
                 }
                 if (item.EmbedObj > 0)
                 {
-                    //Remove_EmbeddedObjects(filepath);
-                    //Console.WriteLine($"--> Change: {item.EmbedObj} embedded objects were removed");
+                    Tuple<int, int, int> success = Convert_EmbeddedObjects(filepath);
+                    if (success.Item1 > 0)
+                    {
+                        f.echoLine($"--> Extract: {success.Item1} original embedded objects were saved to new \"Embedded objects\" subfolder.");
+                    }
+                    if (success.Item2 > 0)
+                    {
+                        f.echoLine($"--> Change: {success.Item2} embedded objects were converted");
+                    }
+                    if (success.Item3 > 0)
+                    {
+                        f.echoLine($"--> ChangeError: {success.Item3} embedded objects could not be processed");
+                    }
+                }
+                if (item.ActiveSheet == true)
+                {
+                    bool success = Activate_FirstSheet(filepath);
+                    if (success)
+                    {
+                        f.echoLine("--> Change: First sheet was activated");
+                    }
+                    else
+                    {
+                        f.echoLine("--> ChangeError: First sheet was NOT activated");
+                    }
+                }
+                if (item.AbsolutePath == true)
+                {
+                    bool success = Remove_AbsolutePath(filepath);
+                    if (success)
+                    {
+                        f.echoLine("--> Change: Absolute path to local directory was removed");
+                    }
+                    else
+                    {
+                        f.echoLine("--> ChangeError: Absolute path to local directory was NOT removed");
+                    }
                 }
                 if (item.Hyperlinks > 0)
                 {
-                    //Change_Hyperlinks(filepath);
-                    //Console.WriteLine($"--> Change: {item.Hyperlinks} hyperlinks were converted to Wayback Machine hyperlinks");
+                    // Do nothing
                 }
             }
         }
 
+        // Work in progress
         // Change conformance to Strict
-        public void Change_Conformance(string filepath)
+        public void Change_ConformanceToStrict(string filepath)
         {
-            // Work in progress
-
             // Create list of namespaces
             List<namespaceIndex> namespaces = namespaceIndex.Create_Namespaces_Index();
 
-            using (var spreadsheet = SpreadsheetDocument.Open(filepath, true))
+            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
             {
                 WorkbookPart wbPart = spreadsheet.WorkbookPart;
                 Workbook workbook = wbPart.Workbook;
@@ -102,31 +134,63 @@ namespace GUISC
         }
 
         // Remove data connections
-        public void Remove_DataConnections(string filepath)
+        public int Remove_DataConnections(string filepath)
         {
+            int success = 0;
 
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
             {
-                // Delete all connections
                 ConnectionsPart conn = spreadsheet.WorkbookPart.ConnectionsPart;
+
+                // Count connections
+                success = conn.Connections.Count();
+
+                // Delete all connections
                 spreadsheet.WorkbookPart.DeletePart(conn);
 
-                // Delete all query tables
-                List<WorksheetPart> worksheetparts = spreadsheet.WorkbookPart.WorksheetParts.ToList();
-                foreach (WorksheetPart part in worksheetparts)
+                // Delete all QueryTableParts
+                IEnumerable<WorksheetPart> worksheetParts = spreadsheet.WorkbookPart.WorksheetParts;
+                foreach (WorksheetPart worksheetPart in worksheetParts)
                 {
-                    List<QueryTablePart> queryTables = part.QueryTableParts.ToList();
-                    foreach (QueryTablePart qtp in queryTables)
+                    // Delete all QueryTableParts in WorksheetParts
+                    List<QueryTablePart> queryTables = worksheetPart.QueryTableParts.ToList(); // Must be a list
+                    foreach (QueryTablePart queryTablePart in queryTables)
                     {
-                        part.DeletePart(qtp);
+                        worksheetPart.DeletePart(queryTablePart);
+                    }
+
+                    // Delete all QueryTableParts, if they are not registered in a WorksheetPart
+                    List<TableDefinitionPart> tableDefinitionParts = worksheetPart.TableDefinitionParts.ToList();
+                    foreach (TableDefinitionPart tableDefinitionPart in tableDefinitionParts)
+                    {
+                        List<IdPartPair> idPartPairs = tableDefinitionPart.Parts.ToList();
+                        foreach (IdPartPair idPartPair in idPartPairs)
+                        {
+                            if (idPartPair.OpenXmlPart.ToString() == "DocumentFormat.OpenXml.Packaging.QueryTablePart")
+                            {
+                                // Delete QueryTablePart
+                                tableDefinitionPart.DeletePart(idPartPair.OpenXmlPart);
+                                // The TableDefinitionPart must also be deleted
+                                worksheetPart.DeletePart(tableDefinitionPart);
+                                // And the reference to the TableDefinitionPart in the WorksheetPart must be deleted
+                                List<TablePart> tableParts = worksheetPart.Worksheet.Descendants<TablePart>().ToList();
+                                foreach (TablePart tablePart in tableParts)
+                                {
+                                    if (idPartPair.RelationshipId == tablePart.Id)
+                                    {
+                                        tablePart.Remove();
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
 
-                // If spreadsheet contains a custom XML Map, delete databinding
+                // If spreadsheet contains a CustomXmlMappingsPart, delete databinding
                 if (spreadsheet.WorkbookPart.CustomXmlMappingsPart != null)
                 {
                     CustomXmlMappingsPart xmlMap = spreadsheet.WorkbookPart.CustomXmlMappingsPart;
-                    List<Map> maps = xmlMap.MapInfo.Elements<Map>().ToList();
+                    List<Map> maps = xmlMap.MapInfo.Elements<Map>().ToList(); // Must be a list
                     foreach (Map map in maps)
                     {
                         if (map.DataBinding != null)
@@ -136,24 +200,24 @@ namespace GUISC
                     }
                 }
             }
-            // Repair spreadsheet
-            Repair rep = new Repair();
-            //rep.Repair_QueryTables(filepath);
+            return success;
         }
 
         // Remove RTD functions
-        public void Remove_RTDFunctions(string filepath)
+        public int Remove_RTDFunctions(string filepath)
         {
+            int success = 0;
+
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
             {
-                List<WorksheetPart> worksheetparts = spreadsheet.WorkbookPart.WorksheetParts.ToList();
+                IEnumerable<WorksheetPart> worksheetparts = spreadsheet.WorkbookPart.WorksheetParts;
                 foreach (WorksheetPart part in worksheetparts)
                 {
                     Worksheet worksheet = part.Worksheet;
                     var rows = worksheet.GetFirstChild<SheetData>().Elements<Row>(); // Find all rows
                     foreach (var row in rows)
                     {
-                        var cells = row.Elements<Cell>();
+                        IEnumerable<Cell> cells = row.Elements<Cell>();
                         foreach (Cell cell in cells)
                         {
                             if (cell.CellFormula != null)
@@ -176,6 +240,8 @@ namespace GUISC
                                         {
                                             cell.CellValue = cellvalue; // Insert saved cell value
                                         }
+                                        // Add to success
+                                        success++;
                                     }
                                 }
                             }
@@ -190,38 +256,45 @@ namespace GUISC
                 VolatileDependenciesPart vol = spreadsheet.WorkbookPart.VolatileDependenciesPart;
                 spreadsheet.WorkbookPart.DeletePart(vol);
             }
+            return success;
         }
 
         // Remove printer settings
-        public void Remove_PrinterSettings(string filepath)
+        public int Remove_PrinterSettings(string filepath)
         {
+            int success = 0;
+
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
             {
-                List<WorksheetPart> wsParts = spreadsheet.WorkbookPart.WorksheetParts.ToList();
+                IEnumerable<WorksheetPart> wsParts = spreadsheet.WorkbookPart.WorksheetParts;
                 foreach (WorksheetPart wsPart in wsParts)
                 {
-                    List<SpreadsheetPrinterSettingsPart> printerList = wsPart.SpreadsheetPrinterSettingsParts.ToList();
-                    foreach (SpreadsheetPrinterSettingsPart printer in printerList)
+                    List<SpreadsheetPrinterSettingsPart> printers = wsPart.SpreadsheetPrinterSettingsParts.ToList(); // Must be a list
+                    foreach (SpreadsheetPrinterSettingsPart printer in printers)
                     {
                         wsPart.DeletePart(printer);
+                        success++;
                     }
                 }
             }
+            return success;
         }
 
         // Remove external cell references
-        public void Remove_ExternalCellReferences(string filepath)
+        public int Remove_ExternalCellReferences(string filepath)
         {
+            int success = 0;
+
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
             {
-                List<WorksheetPart> worksheetparts = spreadsheet.WorkbookPart.WorksheetParts.ToList();
+                IEnumerable<WorksheetPart> worksheetparts = spreadsheet.WorkbookPart.WorksheetParts;
                 foreach (WorksheetPart part in worksheetparts)
                 {
                     Worksheet worksheet = part.Worksheet;
-                    var rows = worksheet.GetFirstChild<SheetData>().Elements<Row>(); // Find all rows
-                    foreach (var row in rows)
+                    IEnumerable<Row> rows = worksheet.GetFirstChild<SheetData>().Elements<Row>(); // Find all rows
+                    foreach (Row row in rows)
                     {
-                        var cells = row.Elements<Cell>();
+                        IEnumerable<Cell> cells = row.Elements<Cell>();
                         foreach (Cell cell in cells)
                         {
                             if (cell.CellFormula != null)
@@ -245,6 +318,8 @@ namespace GUISC
                                         {
                                             cell.CellValue = cellvalue; // Insert saved cell value
                                         }
+                                        // Add to success
+                                        success++;
                                     }
                                 }
                             }
@@ -287,88 +362,61 @@ namespace GUISC
                     }
                 }
             }
+            return success;
         }
 
         // Remove external object references
-        public void Remove_ExternalObjects(string filepath)
+        public Tuple<int, int> CopyAndRemove_ExternalObjects(string filepath)
         {
+            int success = 0;
+            int fail = 0;
+
+            // Create new subfolder for external objects
+            int backslash = filepath.LastIndexOf("\\");
+            string file_folder = filepath.Substring(0, backslash);
+            string new_folder = file_folder + "\\External objects";
+            Directory.CreateDirectory(new_folder);
+
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
             {
                 IEnumerable<ExternalWorkbookPart> extWbParts = spreadsheet.WorkbookPart.ExternalWorkbookParts;
                 foreach (ExternalWorkbookPart extWbPart in extWbParts)
                 {
-                    List<ExternalRelationship> extrels = extWbPart.ExternalRelationships.ToList();
+                    List<ExternalRelationship> extrels = extWbPart.ExternalRelationships.ToList(); // Must be a list
                     foreach (ExternalRelationship extrel in extrels)
                     {
-                        // Change external target reference
-                        Uri uri = new Uri("External reference was removed", UriKind.Relative);
-                        extWbPart.DeleteExternalRelationship("rId1");
-                        extWbPart.AddExternalRelationship(relationshipType: "http://purl.oclc.org/ooxml/officeDocument/relationships/oleObject", externalUri: uri, id: "rId1");
+                        // Copy external file to subfolder
+                        string output_filepath = new_folder + "\\" + extrel.Uri.ToString().Split("/").Last();
+                        try
+                        {
+                            File.Copy(extrel.Uri.ToString(), output_filepath);
+                            success++;
+                        }
+                        catch (System.IO.IOException)
+                        {
+                            fail++;
+                        }
+
+                        // Remove external object reference
+                        Uri uri = new Uri($"External reference {extrel.Uri} was removed", UriKind.Relative);
+                        extWbPart.DeleteExternalRelationship(extrel.Id);
+                        extWbPart.AddExternalRelationship(relationshipType: "http://purl.oclc.org/ooxml/officeDocument/relationships/oleObject", externalUri: uri, id: extrel.Id);
                     }
                 }
             }
-        }
-
-        public void Remove_EmbeddedObjects(string filepath)
-        {
-            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
+            // Delete new subfolder, if no objects were copied to it
+            if (Directory.GetFiles(new_folder).Length == 0)
             {
-                IEnumerable<WorksheetPart> worksheetParts = spreadsheet.WorkbookPart.WorksheetParts;
-                foreach (WorksheetPart worksheetPart in worksheetParts)
-                {
-                    List<EmbeddedObjectPart> embedobj_ole_list = worksheetPart.EmbeddedObjectParts.ToList();
-                    List<EmbeddedPackagePart> embedobj_package_list = worksheetPart.EmbeddedPackageParts.ToList();
-                    List<ImagePart> embedobj_image_list = worksheetPart.ImageParts.ToList();
-                    List<ImagePart> embedobj_drawing_image_list = new List<ImagePart>();
-                    if (worksheetPart.DrawingsPart != null)
-                    {
-                        embedobj_drawing_image_list = worksheetPart.DrawingsPart.ImageParts.ToList();
-                    }
-                    List<Model3DReferenceRelationshipPart> embedobj_3d_list = worksheetPart.Model3DReferenceRelationshipParts.ToList();
-
-                    if (embedobj_ole_list.Count() > 0)
-                    {
-                        foreach (EmbeddedObjectPart ole in embedobj_ole_list)
-                        {
-                            worksheetPart.DeletePart(ole);
-                        }
-                    }
-
-                    if (embedobj_package_list.Count() > 0)
-                    {
-                        foreach (EmbeddedPackagePart package in embedobj_package_list)
-                        {
-                            worksheetPart.DeletePart(package);
-                        }
-                    }
-                    if (embedobj_image_list.Count() > 0)
-                    {
-                        foreach (ImagePart image in embedobj_image_list)
-                        {
-                            worksheetPart.DeletePart(image);
-                        }
-                    }
-                    if (embedobj_drawing_image_list.Count() > 0)
-                    {
-                        foreach (ImagePart drawing_image in embedobj_drawing_image_list)
-                        {
-                            worksheetPart.DrawingsPart.DeletePart(drawing_image);
-                        }
-                    }
-                    if (embedobj_3d_list.Count() > 0)
-                    {
-                        foreach (Model3DReferenceRelationshipPart threeD in embedobj_3d_list)
-                        {
-                            worksheetPart.DeletePart(threeD);
-                        }
-                    }
-                }
+                Directory.Delete(new_folder);
             }
+            return System.Tuple.Create(success, fail);
         }
 
         // Make first sheet active sheet
-        public void Activate_FirstSheet(string filepath)
+        public bool Activate_FirstSheet(string filepath)
         {
+            bool success = false;
+
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
             {
                 BookViews bookViews = spreadsheet.WorkbookPart.Workbook.GetFirstChild<BookViews>();
@@ -391,28 +439,35 @@ namespace GUISC
                                 sheetview.TabSelected = null;
                             }
                         }
+                        success = true;
                     }
                 }
             }
+            return success;
         }
 
         // Remove absolute path to local directory
-        public void Remove_AbsolutePath(string filepath)
+        public bool Remove_AbsolutePath(string filepath)
         {
+            bool success = false;
+
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
             {
                 if (spreadsheet.WorkbookPart.Workbook.AbsolutePath != null)
                 {
                     AbsolutePath absPath = spreadsheet.WorkbookPart.Workbook.GetFirstChild<AbsolutePath>();
                     absPath.Remove();
+                    success = true;
                 }
             }
+            return success;
         }
 
         // Remove metadata in file properties
-        public void Remove_Metadata(string filepath)
+        public int Remove_Metadata(string filepath)
         {
-            string folder = Path.GetDirectoryName(filepath);
+            string folder = System.IO.Path.GetDirectoryName(filepath);
+            int success = 0;
 
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
             {
@@ -423,109 +478,87 @@ namespace GUISC
                 {
                     w.WriteLine("STRIPPED FILE PROPERTIES INFORMATION");
                     w.WriteLine("---");
-                }
 
-                if (property.Creator != null)
-                {
-                    // Write information to metadata file
-                    using (StreamWriter w = File.AppendText($"{folder}\\orgFile_metadata.txt"))
+                    if (property.Creator != null)
                     {
+                        // Write information to metadata file
                         w.WriteLine($"CREATOR: {property.Creator}");
-                    }
 
-                    // Remove information
-                    property.Creator = null;
-                }
-                if (property.Title != null)
-                {
-                    // Write information to metadata file
-                    using (StreamWriter w = File.AppendText($"{folder}\\orgFile_metadata.txt"))
+                        // Remove information
+                        property.Creator = null;
+
+                        // Add to success
+                        success++;
+                    }
+                    if (property.Title != null)
                     {
+                        // Write information to metadata file
                         w.WriteLine($"TITLE: {property.Title}");
-                    }
 
-                    // Remove information
-                    property.Title = null;
-                }
-                if (property.Subject != null)
-                {
-                    // Write information to metadata file
-                    using (StreamWriter w = File.AppendText($"{folder}\\orgFile_metadata.txt"))
+                        // Remove information
+                        property.Title = null;
+
+                        // Add to success
+                        success++;
+                    }
+                    if (property.Subject != null)
                     {
+                        // Write information to metadata file
                         w.WriteLine($"SUBJECT: {property.Subject}");
-                    }
 
-                    // Remove information
-                    property.Subject = null;
-                }
-                if (property.Description != null)
-                {
-                    // Write information to metadata file
-                    using (StreamWriter w = File.AppendText($"{folder}\\orgFile_metadata.txt"))
+                        // Remove information
+                        property.Subject = null;
+
+                        // Add to success
+                        success++;
+                    }
+                    if (property.Description != null)
                     {
+                        // Write information to metadata file
                         w.WriteLine($"DESCRIPTION: {property.Description}");
+
+                        // Remove information
+                        property.Description = null;
+
+                        // Add to success
+                        success++;
                     }
-
-                    // Remove information
-                    property.Description = null;
-                }
-                if (property.Keywords != null)
-                {
-
-                    // Write information to metadata file
-                    using (StreamWriter w = File.AppendText($"{folder}\\orgFile_metadata.txt"))
+                    if (property.Keywords != null)
                     {
+                        // Write information to metadata file
                         w.WriteLine($"KEYWORDS: {property.Keywords}");
-                    }
 
-                    // Remove information
-                    property.Keywords = null;
-                }
-                if (property.Category != null)
-                {
-                    // Write information to metadata file
-                    using (StreamWriter w = File.AppendText($"{folder}\\orgFile_metadata.txt"))
+                        // Remove information
+                        property.Keywords = null;
+
+                        // Add to success
+                        success++;
+                    }
+                    if (property.Category != null)
                     {
+                        // Write information to metadata file
                         w.WriteLine($"CATEGORY: {property.Category}");
-                    }
 
-                    // Remove information
-                    property.Category = null;
-                }
-                if (property.LastModifiedBy != null)
-                {
-                    // Write information to metadata file
-                    using (StreamWriter w = File.AppendText($"{folder}\\orgFile_metadata.txt"))
+                        // Remove information
+                        property.Category = null;
+
+                        // Add to success
+                        success++;
+                    }
+                    if (property.LastModifiedBy != null)
                     {
+                        // Write information to metadata file
                         w.WriteLine($"LAST MODIFIED BY: {property.LastModifiedBy}");
-                    }
 
-                    // Remove information
-                    property.LastModifiedBy = null;
-                }
-            }
-        }
+                        // Remove information
+                        property.LastModifiedBy = null;
 
-        // Change hyperlinks to link to Wayback Machine
-        public void Change_Hyperlinks(string filepath)
-        {
-            string old_hyperlink = "";
-            string new_hyperlink = "";
-
-            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
-            {
-                List<WorksheetPart> worksheetParts = spreadsheet.WorkbookPart.WorksheetParts.ToList();
-                foreach (WorksheetPart worksheetPart in worksheetParts)
-                {
-                    Worksheet worksheet = worksheetPart.Worksheet;
-                    IEnumerable<Hyperlink> hyperlinks = worksheet.GetFirstChild<Hyperlinks>().Elements<Hyperlink>();
-                    foreach (Hyperlink hyperlink in hyperlinks)
-                    {
-                        Console.WriteLine(hyperlink.Id);
-                        ReferenceRelationship refRel = worksheetPart.GetReferenceRelationship(hyperlink.Id);
+                        // Add to success
+                        success++;
                     }
                 }
             }
+            return success;
         }
     }
 }

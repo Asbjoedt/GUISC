@@ -17,8 +17,10 @@ namespace GUISC
         // Count spreadsheets
         public string Count_Spreadsheets(string inputdir, string outputdir, bool recurse)
         {
-            Console.WriteLine("COUNT");
-            Console.WriteLine("---");
+            Function f = new Function();
+
+            f.echoLog("COUNT");
+            f.echoLog("---");
 
             //Object reference
             DirectoryInfo count = new DirectoryInfo(inputdir);
@@ -70,27 +72,27 @@ namespace GUISC
             // Inform user if no spreadsheets identified
             if (numTOTAL == 0)
             {
-                Console.WriteLine("No spreadsheets identified");
-                Console.WriteLine("CLISC ended");
-                Console.WriteLine("---");
+                f.echoLog("No spreadsheets identified");
+                f.echoLog("CLISC ended");
+                f.echoLog("---");
                 throw new Exception();
             }
             else
             {
                 // Show count to user
-                Console.WriteLine("# Extension - Name");
+                f.echoLog("# Extension - Name");
                 foreach (fileFormatIndex fileformat in fileformats)
                 {
                     if (fileformat.Conformance == null)
                     {
-                        Console.WriteLine($"{fileformat.Count} {fileformat.Extension} - {fileformat.Description}");
+                        f.echoLine($"{fileformat.Count} {fileformat.Extension} - {fileformat.Description}");
                     }
                     else if (fileformat.Conformance != null)
                     {
-                        Console.WriteLine($"--> {fileformat.Count} {fileformat.Extension} have {fileformat.Conformance} conformance");
+                        f.echoLine($"--> {fileformat.Count} {fileformat.Extension} have {fileformat.Conformance} conformance");
                     }
                 }
-                Console.WriteLine($"{numTOTAL} spreadsheets in total");
+                f.echoLog($"{numTOTAL} spreadsheets in total");
 
                 // Create new directory to output results in CSV
                 Results res = new Results();
