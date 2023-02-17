@@ -19,8 +19,9 @@ A Windows application made in C# and Windows Forms. It is a prototype project fo
 
 ## Packages and software
 The following packages and software are used under license in GUISC.
-
-* [Beyond Compare 4](https://www.scootersoftware.com/index.php), Copyright (c) 2022 Scooter Software, Inc.
-* [Microsoft Excel](https://www.microsoft.com/en-us/microsoft-365/excel), Copyright (c) Microsoft Corporation
+* [Beyond Compare 4](https://www.scootersoftware.com/index.php), copyright (c) 2022 Scooter Software, Inc.
 * [LibreOffice](https://www.libreoffice.org/), Mozilla Public License v2.0
-* [Open XML SDK](https://github.com/OfficeDev/Open-XML-SDK), MIT License, Copyright (c) Microsoft Corporation
+* [Magick.Net](https://github.com/dlemstra/Magick.NET), Apache-2.0 license, copyright (c) Dirk Lemstra
+* [Microsoft Excel](https://www.microsoft.com/en-us/microsoft-365/excel), copyright (c) Microsoft Corporation
+* [ODF Validator 0.10.0](https://odftoolkit.org/conformance/ODFValidator.html), Apache License, [copyright info](https://github.com/tdf/odftoolkit/blob/master/NOTICE)
+* [Open XML SDK](https://github.com/OfficeDev/Open-XML-SDK), MIT License, copyright (c) Microsoft Corporation
