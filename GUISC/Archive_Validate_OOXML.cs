@@ -35,11 +35,12 @@ namespace GUISC
 
         public string? Error_RelatedNode_InnerText { get; set; }
 
+        Function f = new Function();
+
         // Validate Open Office XML file formats
         public List<Validation> Validate_OOXML(string org_filepath, string filepath, string Results_Directory)
         {
             List<Validation> results = new List<Validation>();
-            Function f = new Function();
 
             using (var spreadsheet = SpreadsheetDocument.Open(filepath, false))
             {
@@ -91,7 +92,6 @@ namespace GUISC
         public List<Validation> Validate_OOXML_Hack(string org_filepath, string filepath, string Results_Directory)
         {
             List<Validation> results = new List<Validation>();
-            Function f = new Function();
 
             using (var spreadsheet = SpreadsheetDocument.Open(filepath, false))
             {

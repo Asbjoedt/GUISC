@@ -4,8 +4,7 @@ using System.Threading;
 using System.Drawing;
 using System.ComponentModel;
 using System.Windows.Forms;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.TaskbarClock;
-using System.Runtime.CompilerServices;
+using System.Reflection.Emit;
 
 namespace GUISC
 {
@@ -17,6 +16,10 @@ namespace GUISC
         public static string outputdir = "";
         public static string function = "";
         public static bool recurse = false;
+        public static int countno = 0;
+        public static int convertno;
+        public static int compareno;
+        public static int archiveno;
         TimeSpan time = new TimeSpan();
 
         // Primary Windows Forms method
@@ -30,41 +33,38 @@ namespace GUISC
         {
             // Begin process timer
             timer.Start();
-            
-            // Clear results window
+
+            // Clear textboxes
+            currentLine.Clear();
             resultsWindow.Clear();
 
             // Inform user of start
-            resultsWindow.AppendText("GUISC started" + Environment.NewLine);
+            resultsWindow.AppendText("GUISC started");
 
             // Disable input buttons
             Disable_Input_Buttons();
 
-            // Run the code
-            backgroundworker.RunWorkerCompleted += backgroundworker_RunWorkerCompleted;
-            backgroundworker.RunWorkerAsync();
+            // Calculate progress percentage based on input function
+            ProgressPercentage();
 
-            // Stop process timer
-            timer.Stop();
+            // Run the code
+            backgroundWorker1.RunWorkerAsync();
         }
 
-        // Run primary methods through backgroundworker
-        private void backgroundworker_DoWork(object sender, DoWorkEventArgs e)
+        // Run primary methods in backgroundworker
+        private void backgroundWorker1_DoWork(object sender, DoWorkEventArgs e)
         {
-            //Check if there is a request to cancel the process
-            if (backgroundworker.CancellationPending)
+            // Get the BackgroundWorker that raised this event
+            BackgroundWorker worker = sender as BackgroundWorker;
+
+            // Do backgroundwork
+            Run_Switch();
+
+            // Check if there is a request to cancel the process
+            if (backgroundWorker1.CancellationPending)
             {
                 e.Cancel = true;
                 return;
-            }
-
-            // Do backgroundwork
-            while (!e.Cancel)
-            {
-                Run_Switch();
-
-                // Enable open results dir button
-                resultsDir_open.Enabled = true;
             }
 
             // Return if backgroundwork is cancelled
@@ -74,21 +74,39 @@ namespace GUISC
             }
         }
 
-        // Inform user when application ends through backgroundworker
-        private void backgroundworker_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
+        // Inform user when application ends in backgroundworker
+        private void backgroundWorker1_RunWorkerCompleted(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
             {
-                resultsWindow.AppendText("GUISC was cancelled");
+                resultsWindow.AppendText(Environment.NewLine + "GUISC was cancelled");
             }
             else if (e.Error != null)
             {
-                resultsWindow.AppendText("Error. Details: " + (e.Error as Exception).ToString());
+                resultsWindow.AppendText(Environment.NewLine + "Error. Details: " + (e.Error as Exception).ToString());
             }
             else
             {
-                resultsWindow.AppendText("GUISC ended");
+                resultsWindow.AppendText(Environment.NewLine + "GUISC finished");
             }
+
+            // Clear process line
+            currentLine.Clear();
+
+            // Enable buttons
+            Enable_Input_Buttons();
+            resultsDir_open.Enabled = true;
+
+            // Stop the timer
+            timer.Stop();
+        }
+
+        // Receive console inputs from backgroundworker by using ProgressChanged
+        private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            progressBar.Value = e.ProgressPercentage;
+            string message = e.UserState as string;
+            resultsWindow.AppendText(Environment.NewLine + message);
         }
 
         // Switch for methods to run
@@ -135,7 +153,7 @@ namespace GUISC
         // Link to GitHub
         private void Link_LinkClicked(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start("https://github.com/Asbjoedt/GUISC");
+            Process.Start("https://github.com/Asbjoedt/GUISC");
         }
 
         // Open results directory
@@ -210,8 +228,8 @@ namespace GUISC
             Run.Enabled = false;
             inputDir_button.Enabled = false;
             outputDir_button.Enabled = false;
-            functionPicker.Enabled= false;
-            Recurse.Enabled= false;
+            functionPicker.Enabled = false;
+            Recurse.Enabled = false;
         }
 
         // Enable input buttons
@@ -225,22 +243,17 @@ namespace GUISC
         }
 
         // Cancel button
-        private void Cancel_Click(object sender, EventArgs e)
+        private void Cancel_Click(Object sender, EventArgs e)
         {
-            // Stop the process
-            backgroundworker.CancelAsync();
-            backgroundworker.Dispose();
+            // Cancel the asynchronous operation
+            this.backgroundWorker1.CancelAsync();
 
-            // Clear results window
-            resultsWindow.Clear();
-            timeWindow.Clear();
-
-            // Enable input buttons
-            Enable_Input_Buttons();
+            // Disable the cancel button
+            cancelButton.Enabled = false;
         }
 
         // Advance and show time
-        private void timer_Tick(object sender, EventArgs e)
+        private void timer_Elapsed(object sender, EventArgs e)
         {
             time = time.Add(TimeSpan.FromSeconds(1));
             timeWindow.Text = String.Format($"{time:dd\\:hh\\:mm\\:ss}");
@@ -249,14 +262,32 @@ namespace GUISC
         // Update process line
         public void echoLine(string text)
         { 
-            this.currentLine.AppendText(Environment.NewLine);
-            this.currentLine.AppendText(text);
+            currentLine.Text = text;
         }
 
         // Update process log
         public void echoLog(string text)
         {
-            this.resultsWindow.AppendText(text + Environment.NewLine);
+            resultsWindow.AppendText(Environment.NewLine + text);
+        }
+
+        public void ProgressPercentage()
+        {
+            if (function == "CountConvert")
+            {
+                convertno = 50;
+            }
+            else if (function == "CountConvertCompare")
+            {
+                convertno = 33;
+                compareno = 66;
+            }
+            else if (function == "CountConvertCompareArchive")
+            {
+                convertno = 25;
+                compareno = 50;
+                archiveno = 75;
+            }
         }
     }
 }

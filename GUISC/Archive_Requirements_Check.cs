@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Office2013.ExcelAc;
+using System.ComponentModel;
 
 namespace GUISC
 {
@@ -37,6 +38,8 @@ namespace GUISC
 
         public bool AbsolutePath { get; set; } = false;
 
+        Function f = new Function();
+
         // Perform check of archival requirements
         public List<Archive_Requirements> Check_XLSX_Requirements(string filepath)
         {
@@ -63,7 +66,6 @@ namespace GUISC
         public bool Check_Value(string filepath)
         {
             bool nocellvalues = true;
-            Function f = new Function();
 
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
@@ -95,7 +97,6 @@ namespace GUISC
         public bool Check_Conformance(string filepath)
         {
             bool conformance = false;
-            Function f = new Function();
 
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
@@ -127,7 +128,6 @@ namespace GUISC
         public int Check_DataConnections(string filepath)
         {
             int conn_count = 0;
-            Function f = new Function();
 
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
@@ -151,7 +151,6 @@ namespace GUISC
         public int Check_ExternalCellReferences(string filepath)
         {
             int ext_cellrefs_count = 0;
-            Function f = new Function();
 
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
@@ -196,7 +195,6 @@ namespace GUISC
         public int Check_ExternalObjects(string filepath)
         {
             int extobj_count = 0;
-            Function f = new Function();
 
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
@@ -220,7 +218,6 @@ namespace GUISC
         public static int Check_RTDFunctions(string filepath) // Check for RTD functions
         {
             int rtd_functions_count = 0;
-            Function f = new Function();
 
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
             {
@@ -243,13 +240,18 @@ namespace GUISC
                                     if (hit == "RTD")
                                     {
                                         rtd_functions_count++;
-                                        f.echoLine($"Check: RTD function in sheet {part.Uri} cell {cell.CellReference} detected");
                                     }
                                 }
                             }
                         }
                     }
                 }
+            }
+
+            // Inform user
+            if (rtd_functions_count > 0)
+            {
+                //f.echoLine($"Check: {rtd_functions_count} RealTimeData functions detected");
             }
             return rtd_functions_count;
         }
@@ -258,7 +260,6 @@ namespace GUISC
         {
             int count_embedobj = 0;
             int embedobj_number = 0;
-            Function f = new Function();
             List<EmbeddedObjectPart> ole = new List<EmbeddedObjectPart>();
             List<EmbeddedPackagePart> packages = new List<EmbeddedPackagePart>();
             List<ImagePart> emf = new List<ImagePart>();
@@ -324,7 +325,6 @@ namespace GUISC
         public int Check_Hyperlinks(string filepath)
         {
             int hyperlinks_count = 0;
-            Function f = new Function();
 
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
@@ -349,7 +349,6 @@ namespace GUISC
         public int Check_PrinterSettings(string filepath)
         {
             int printersettings_count = 0;
-            Function f = new Function();
 
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
@@ -378,7 +377,6 @@ namespace GUISC
         public bool Check_ActiveSheet(string filepath)
         {
             bool activeSheet = false;
-            Function f = new Function();
 
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
@@ -412,7 +410,6 @@ namespace GUISC
         public bool Check_AbsolutePath(string filepath)
         {
             bool absolutepath = false;
-            Function f = new Function();
 
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
@@ -435,7 +432,6 @@ namespace GUISC
         public bool Check_Metadata(string filepath)
         {
             bool metadata = false;
-            Function f = new Function();
 
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
@@ -484,7 +480,6 @@ namespace GUISC
         public bool Check_ReadOnlyRecommended(string filepath)
         {
             bool readOnlyRecommended = false;
-            Function f = new Function();
 
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))

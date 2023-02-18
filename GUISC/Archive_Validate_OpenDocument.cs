@@ -15,7 +15,6 @@ namespace GUISC
         public bool? Validate_OpenDocument(string filepath)
         {
             bool? valid = null;
-            Function f = new Function();
 
             try
             {

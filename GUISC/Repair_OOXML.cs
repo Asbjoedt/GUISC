@@ -11,11 +11,11 @@ namespace GUISC
 {
     public class Repair
     {
+        Function f = new Function();
+
         // Perform all repairs
         public void Repair_OOXML(string filepath)
         {
-            Function f = new Function();
-
             bool repair_1 = Repair_VBA(filepath);
             bool repair_2 = Repair_CustomUI(filepath);
             bool repair_3 = Repair_DefinedNames(filepath);

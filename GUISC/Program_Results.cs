@@ -9,11 +9,11 @@ namespace GUISC
 {
     public partial class Results
     {
+        Function f = new Function();
+
         // Methods for results reporting
         public void Count_Results()
         {
-            Function f = new Function();
-
             f.echoLog("---");
             f.echoLog("CLISC SUMMARY");
             f.echoLog("---");
@@ -23,8 +23,6 @@ namespace GUISC
 
         public void Convert_Results()
         {
-            Function f = new Function();
-
             // Calculate fails
             int fail_conversion = Count.numTOTAL - Conversion.numCOMPLETE;
 
@@ -37,8 +35,6 @@ namespace GUISC
         }
         public void Compare_Results()
         {
-            Function f = new Function();
-
             // Calculate fails
             int fail_conversion = Count.numTOTAL - Conversion.numCOMPLETE;
             int fail_comparison = Conversion.numCOMPLETE - Compare.numTOTAL_compare;
@@ -54,9 +50,6 @@ namespace GUISC
         }
         public void Archive_Results()
         {
-            Function f = new Function();
-
-            // Calculate fails
             int fail_conversion = Count.numTOTAL - Conversion.numCOMPLETE;
             int fail_comparison = Conversion.numCOMPLETE - Compare.numTOTAL_compare;
 

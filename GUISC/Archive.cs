@@ -23,6 +23,7 @@ namespace GUISC
         public static int hyperlinks_files = 0;
         public static int valid_files = 0;
         public static int invalid_files = 0;
+        Function f = new Function();
 
         // Archive the spreadsheets according to advanced archival requirements
         public void Archive_Spreadsheets(string Results_Directory, List<fileIndex> File_List)
@@ -43,9 +44,9 @@ namespace GUISC
             bool? ods_validity = null;
             string ods_conv_checksum = "";
             bool? archive_req_accept = null;
-            Function f = new Function();
 
             // Inform user of beginning of archiving
+            f.backgroundWorker1.ReportProgress(75, String.Format("---"));
             f.echoLog("---");
             f.echoLog("ARCHIVE");
             f.echoLog("---");

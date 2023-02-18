@@ -49,8 +49,10 @@
             this.functionPicker = new System.Windows.Forms.ComboBox();
             this.inputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
             this.outputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
-            this.backgroundworker = new System.ComponentModel.BackgroundWorker();
             this.timer = new System.Windows.Forms.Timer(this.components);
+            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            this.progressBar = new System.Windows.Forms.ProgressBar();
+            this.prgoressBarLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // Run
@@ -73,6 +75,7 @@
             this.inputDir.Size = new System.Drawing.Size(404, 23);
             this.inputDir.TabIndex = 1;
             this.inputDir.Text = "Choose input directory";
+            this.inputDir.WordWrap = false;
             // 
             // outputDir
             // 
@@ -82,6 +85,7 @@
             this.outputDir.Size = new System.Drawing.Size(404, 23);
             this.outputDir.TabIndex = 2;
             this.outputDir.Text = "Choose output directory";
+            this.outputDir.WordWrap = false;
             // 
             // resultsWindow
             // 
@@ -183,6 +187,7 @@
             this.currentLine.ReadOnly = true;
             this.currentLine.Size = new System.Drawing.Size(458, 23);
             this.currentLine.TabIndex = 19;
+            this.currentLine.WordWrap = false;
             // 
             // currentProcessLine_label
             // 
@@ -207,7 +212,7 @@
             // 
             // timeWindow
             // 
-            this.timeWindow.Location = new System.Drawing.Point(395, 173);
+            this.timeWindow.Location = new System.Drawing.Point(395, 127);
             this.timeWindow.Name = "timeWindow";
             this.timeWindow.ReadOnly = true;
             this.timeWindow.Size = new System.Drawing.Size(75, 23);
@@ -217,7 +222,7 @@
             // timeWindow_label
             // 
             this.timeWindow_label.AutoSize = true;
-            this.timeWindow_label.Location = new System.Drawing.Point(405, 155);
+            this.timeWindow_label.Location = new System.Drawing.Point(405, 109);
             this.timeWindow_label.Name = "timeWindow_label";
             this.timeWindow_label.Size = new System.Drawing.Size(65, 15);
             this.timeWindow_label.TabIndex = 23;
@@ -238,15 +243,34 @@
             this.functionPicker.Text = "...";
             this.functionPicker.SelectedIndexChanged += new System.EventHandler(this.functionPicker_SelectedIndexChanged);
             // 
-            // backgroundworker
-            // 
-            this.backgroundworker.WorkerSupportsCancellation = true;
-            this.backgroundworker.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundworker_DoWork);
-            // 
             // timer
             // 
             this.timer.Interval = 1000;
-            this.timer.Tick += new System.EventHandler(this.timer_Tick);
+            this.timer.Tick += new System.EventHandler(this.timer_Elapsed);
+            // 
+            // backgroundWorker1
+            // 
+            this.backgroundWorker1.WorkerReportsProgress = true;
+            this.backgroundWorker1.WorkerSupportsCancellation = true;
+            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
+            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
+            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            // 
+            // progressBar
+            // 
+            this.progressBar.Location = new System.Drawing.Point(370, 173);
+            this.progressBar.Name = "progressBar";
+            this.progressBar.Size = new System.Drawing.Size(100, 23);
+            this.progressBar.TabIndex = 26;
+            // 
+            // prgoressBarLabel
+            // 
+            this.prgoressBarLabel.AutoSize = true;
+            this.prgoressBarLabel.Location = new System.Drawing.Point(398, 153);
+            this.prgoressBarLabel.Name = "prgoressBarLabel";
+            this.prgoressBarLabel.Size = new System.Drawing.Size(72, 15);
+            this.prgoressBarLabel.TabIndex = 27;
+            this.prgoressBarLabel.Text = "Progress bar";
             // 
             // Function
             // 
@@ -255,6 +279,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(482, 483);
+            this.Controls.Add(this.prgoressBarLabel);
+            this.Controls.Add(this.progressBar);
             this.Controls.Add(this.functionPicker);
             this.Controls.Add(this.timeWindow_label);
             this.Controls.Add(this.timeWindow);
@@ -296,12 +322,14 @@
         private TextBox currentLine;
         private Label currentProcessLine_label;
         private Button resultsDir_open;
-        private TextBox timeWindow;
         private Label timeWindow_label;
         private ComboBox functionPicker;
         private FolderBrowserDialog inputDir_prompt;
         private FolderBrowserDialog outputDir_prompt;
-        private System.ComponentModel.BackgroundWorker backgroundworker;
         private System.Windows.Forms.Timer timer;
+        public TextBox timeWindow;
+        public System.ComponentModel.BackgroundWorker backgroundWorker1;
+        private ProgressBar progressBar;
+        private Label prgoressBarLabel;
     }
 }

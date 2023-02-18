@@ -4,21 +4,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using DocumentFormat.OpenXml.Office2010.ExcelAc;
-using DocumentFormat.OpenXml.Office2019.Excel.ThreadedComments;
 
 namespace GUISC
 {
     public partial class Count
     {
+        Function f = new Function();
+
         // Public data types
         public static int numTOTAL, numXLSX_Strict;
 
         // Count spreadsheets
         public string Count_Spreadsheets(string inputdir, string outputdir, bool recurse)
         {
-            Function f = new Function();
-
+            f.backgroundWorker1.ReportProgress(Function.countno, String.Format("---"));
+            f.backgroundWorker1.ReportProgress(Function.countno, String.Format("COUNT"));
+            f.backgroundWorker1.ReportProgress(Function.countno, String.Format("---"));
             f.echoLog("COUNT");
             f.echoLog("---");
 

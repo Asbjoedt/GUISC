@@ -36,12 +36,11 @@ namespace GUISC
         string? ods_conv_filepath = null;
         static string? error_message = null;
         static string[] error_messages = { "", "Spreadsheet cannot be read", "Microsoft Excel Add-In file format cannot contain any cell values and is not converted", "Google Sheets are stored in the cloud and cannot be converted locally", "Apple Numbers file format is not supported", "Filesize exceeds application limit" };
+        Function f = new Function();
 
         // Convert spreadsheets method
         public List<fileIndex> Convert_Spreadsheets(string function, string inputdir, bool recurse, string Results_Directory)
         {
-            Function f = new Function();
-
             f.echoLog("---");
             f.echoLog("CONVERT");
             f.echoLog("---");
