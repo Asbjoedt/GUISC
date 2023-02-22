@@ -21,7 +21,7 @@ namespace GUISC
             f.backgroundWorker1.ReportProgress(Function.countno, String.Format("COUNT"));
             f.backgroundWorker1.ReportProgress(Function.countno, String.Format("---"));
             f.echoLog("COUNT");
-            f.echoLog("---");
+            f.echoLog2("---");
 
             //Object reference
             DirectoryInfo count = new DirectoryInfo(inputdir);

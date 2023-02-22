@@ -16,6 +16,7 @@ namespace GUISC
         public static string outputdir = "";
         public static string function = "";
         public static bool recurse = false;
+        public static bool fullcompliance = false;
         public static int countno = 0;
         public static int convertno;
         public static int compareno;
@@ -106,6 +107,7 @@ namespace GUISC
         {
             progressBar.Value = e.ProgressPercentage;
             string message = e.UserState as string;
+            resultsWindow.Text = "DDD";
             resultsWindow.AppendText(Environment.NewLine + message);
         }
 
@@ -200,18 +202,22 @@ namespace GUISC
             if (function == "Count")
             {
                 function = "Count";
+                fullCompliance.Visible = false;
             }
             else if (function == "Count & Convert")
             {
                 function = "CountConvert";
+                fullCompliance.Visible = false;
             }
             else if (function == "Count, Convert & Compare")
             {
                 function = "CountConvertCompare";
+                fullCompliance.Visible = false;
             }
             else if (function == "Count, Convert, Compare & Archive")
             {
                 function = "CountConvertCompareArchive";
+                fullCompliance.Visible = true;
             }
             Enable_Run_Button();
         }
@@ -259,6 +265,20 @@ namespace GUISC
             timeWindow.Text = String.Format($"{time:dd\\:hh\\:mm\\:ss}");
         }
 
+        delegate void myDelegate(string name);
+        public void echoLog2(string message)
+        {
+            if (this.InvokeRequired)
+            {
+                myDelegate textWriter = new myDelegate(echoLog2);
+                this.Invoke(textWriter, new object[] { message });
+            }
+            else
+            {
+                resultsWindow.Text = message;
+            }
+        }
+
         // Update process line
         public void echoLine(string text)
         { 
@@ -288,6 +308,11 @@ namespace GUISC
                 compareno = 50;
                 archiveno = 75;
             }
+        }
+
+        private void fullCompliance_CheckedChanged(object sender, EventArgs e)
+        {
+            fullcompliance = true;
         }
     }
 }

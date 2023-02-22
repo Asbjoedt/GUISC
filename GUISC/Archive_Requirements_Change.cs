@@ -21,11 +21,6 @@ namespace GUISC
 
             foreach (var item in arcReq)
             {
-                if (item.Metadata == true)
-                {
-                    //int success = Remove_Metadata(filepath);
-                    //f.echoLine($"--> Change: {success} file property information were removed and saved to sidecar file");
-                }
                 if (item.Conformance == true)
                 {
                     Change_ConformanceToStrict_ExcelInterop(filepath);
@@ -45,11 +40,6 @@ namespace GUISC
                 {
                     int success = Remove_RTDFunctions(filepath);
                     f.echoLine($"--> Change: {success} RTD functions were removed");
-                }
-                if (item.PrinterSettings > 0)
-                {
-                    int success = Remove_PrinterSettings(filepath);
-                    f.echoLine($"--> Change: {success} printer settings were removed");
                 }
                 if (item.ExternalObj > 0)
                 {
@@ -79,33 +69,47 @@ namespace GUISC
                         f.echoLine($"--> ChangeError: {success.Item3} embedded objects could not be processed");
                     }
                 }
-                if (item.ActiveSheet == true)
+                if (Function.fullcompliance)
                 {
-                    bool success = Activate_FirstSheet(filepath);
-                    if (success)
+                    if (item.Metadata == true)
                     {
-                        f.echoLine("--> Change: First sheet was activated");
+                        int success = Remove_Metadata(filepath);
+                        f.echoLine($"--> Change: {success} file property information were removed and saved to sidecar file");
                     }
-                    else
+                    if (item.PrinterSettings > 0)
                     {
-                        f.echoLine("--> ChangeError: First sheet was NOT activated");
+                        int success = Remove_PrinterSettings(filepath);
+                        f.echoLine($"--> Change: {success} printer settings were removed");
                     }
-                }
-                if (item.AbsolutePath == true)
-                {
-                    bool success = Remove_AbsolutePath(filepath);
-                    if (success)
+                    if (item.ActiveSheet == true)
                     {
-                        f.echoLine("--> Change: Absolute path to local directory was removed");
+                        bool success = Activate_FirstSheet(filepath);
+                        if (success)
+                        {
+                            f.echoLine("--> Change: First sheet was activated");
+                        }
+                        else
+                        {
+                            f.echoLine("--> ChangeError: First sheet was NOT activated");
+                        }
                     }
-                    else
+                    if (item.AbsolutePath == true)
                     {
-                        f.echoLine("--> ChangeError: Absolute path to local directory was NOT removed");
+                        bool success = Remove_AbsolutePath(filepath);
+                        if (success)
+                        {
+                            f.echoLine("--> Change: Absolute path to local directory was removed");
+                        }
+                        else
+                        {
+                            f.echoLine("--> ChangeError: Absolute path to local directory was NOT removed");
+                        }
                     }
-                }
-                if (item.Hyperlinks > 0)
-                {
-                    // Do nothing
+                    if (item.Hyperlinks > 0)
+                    {
+                        int success = Extract_Hyperlinks(filepath);
+                        f.echoLine($"--> Extract: {success} cell hyperlinks were extracted");
+                    }
                 }
             }
         }
@@ -559,6 +563,38 @@ namespace GUISC
                 }
             }
             return success;
+        }
+
+        // Extract all cell hyperlinks to an external file
+        public int Extract_Hyperlinks(string filepath)
+        {
+            string folder = System.IO.Path.GetDirectoryName(filepath);
+            int hyperlinks_count = 0;
+
+            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
+            {
+                List<HyperlinkRelationship> hyperlinks = spreadsheet
+                    .GetAllParts()
+                    .SelectMany(p => p.HyperlinkRelationships)
+                    .ToList();
+
+                // Create metadata file
+                using (StreamWriter w = File.AppendText($"{folder}\\orgFile_Metadata.txt"))
+                {
+                    w.WriteLine("---");
+                    w.WriteLine("EXTRACTED HYPERLINKS");
+                    w.WriteLine("---");
+
+                    foreach (HyperlinkRelationship hyperlink in hyperlinks)
+                    {
+                        // Write information to metadata file
+                        w.WriteLine(hyperlink.Uri);
+                        // Add to count
+                        hyperlinks_count++;
+                    }
+                }
+            }
+            return hyperlinks_count;
         }
     }
 }

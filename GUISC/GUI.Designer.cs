@@ -53,6 +53,7 @@
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.progressBar = new System.Windows.Forms.ProgressBar();
             this.prgoressBarLabel = new System.Windows.Forms.Label();
+            this.fullCompliance = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // Run
@@ -272,6 +273,18 @@
             this.prgoressBarLabel.TabIndex = 27;
             this.prgoressBarLabel.Text = "Progress bar";
             // 
+            // fullCompliance
+            // 
+            this.fullCompliance.AutoSize = true;
+            this.fullCompliance.Location = new System.Drawing.Point(162, 152);
+            this.fullCompliance.Name = "fullCompliance";
+            this.fullCompliance.Size = new System.Drawing.Size(110, 19);
+            this.fullCompliance.TabIndex = 28;
+            this.fullCompliance.Text = "Full compliance";
+            this.fullCompliance.UseVisualStyleBackColor = true;
+            this.fullCompliance.Visible = false;
+            this.fullCompliance.CheckedChanged += new System.EventHandler(this.fullCompliance_CheckedChanged);
+            // 
             // Function
             // 
             this.AllowDrop = true;
@@ -279,6 +292,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.CancelButton = this.cancelButton;
             this.ClientSize = new System.Drawing.Size(482, 483);
+            this.Controls.Add(this.fullCompliance);
             this.Controls.Add(this.prgoressBarLabel);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.functionPicker);
@@ -331,5 +345,6 @@
         public System.ComponentModel.BackgroundWorker backgroundWorker1;
         private ProgressBar progressBar;
         private Label prgoressBarLabel;
+        private CheckBox fullCompliance;
     }
 }
