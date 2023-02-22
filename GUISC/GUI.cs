@@ -107,7 +107,6 @@ namespace GUISC
         {
             progressBar.Value = e.ProgressPercentage;
             string message = e.UserState as string;
-            resultsWindow.Text = "DDD";
             resultsWindow.AppendText(Environment.NewLine + message);
         }
 
