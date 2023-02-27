@@ -36,14 +36,12 @@ namespace GUISC
         string? ods_conv_filepath = null;
         static string? error_message = null;
         static string[] error_messages = { "", "Spreadsheet cannot be read", "Microsoft Excel Add-In file format cannot contain any cell values and is not converted", "Google Sheets are stored in the cloud and cannot be converted locally", "Apple Numbers file format is not supported", "Filesize exceeds application limit" };
-        Function f = new Function();
 
         // Convert spreadsheets method
-        public List<fileIndex> Convert_Spreadsheets(string function, string inputdir, bool recurse, string Results_Directory)
+        public List<fileIndex> Convert_Spreadsheets(string function, string inputdir, bool recurse, string Results_Directory, BackgroundWorker worker)
         {
-            f.echoLog("---");
-            f.echoLog("CONVERT");
-            f.echoLog("---");
+            worker.ReportProgress(Function.convertno, String.Format("CONVERT begins"));
+            worker.ReportProgress(Function.convertno, String.Format("---"));
 
             // Open CSV file to log results
             var csv = new StringBuilder();
@@ -106,7 +104,7 @@ namespace GUISC
                 }
 
                 // Inform user of original filepath
-                f.echoLine(org_filepath);
+                worker.ReportProgress(69, String.Format(org_filepath));
 
                 // Convert spreadsheet
                 try
@@ -152,7 +150,7 @@ namespace GUISC
                         case ".xlt":
                         case ".xlsb":
                             // Convert to .xlsx Transitional using Excel Interop
-                            convert_success = Convert_ExcelInterop(copy_filepath, output_filepath);
+                            convert_success = Convert_ExcelInterop(copy_filepath, output_filepath, worker);
                             break;
 
                         // Office Open XML file formats
@@ -161,7 +159,7 @@ namespace GUISC
                         case ".xltm":
                         case ".xltx":
                             // Convert to .xlsx Transitional using Open XML SDK
-                            convert_success = ConvertToXLSX(copy_filepath, output_filepath);
+                            convert_success = ConvertToXLSX(copy_filepath, output_filepath, worker);
                             break;
                     }
                 }
@@ -208,7 +206,7 @@ namespace GUISC
                 finally
                 {
                     // Inform user
-                    f.echoLine($"Conversion: {convert_success}");
+                    worker.ReportProgress(69, String.Format($"Conversion: {convert_success}"));
 
                     // If conversion success
                     if (convert_success == true)
@@ -217,7 +215,7 @@ namespace GUISC
                         numCOMPLETE++;
 
                         // Inform user
-                        f.echoLine($"File saved to: {output_filepath}");
+                        worker.ReportProgress(69, String.Format($"File saved to: {output_filepath}"));
 
                         //Transform XLSX data types
                         xlsx_conv_extension = Path.GetExtension(output_filepath);
@@ -241,7 +239,7 @@ namespace GUISC
                         {
                             error_message = error_messages[1];
                         }
-                        f.echoLine($"{error_message}");
+                        worker.ReportProgress(69, String.Format($"{error_message}"));
 
                         // Delete converted spreadsheet (it has errors), if it exists
                         if (File.Exists(output_filepath))
@@ -273,6 +271,7 @@ namespace GUISC
                 Results.CSV_filepath = Results_Directory + "\\2_Convert_Results.csv";
                 File.WriteAllText(Results.CSV_filepath, csv.ToString(), Encoding.UTF8);
             }
+            worker.ReportProgress(Function.convertno, String.Format("---"));
             return File_List;
         }
     }

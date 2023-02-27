@@ -38,59 +38,89 @@ namespace GUISC
 
         public bool AbsolutePath { get; set; } = false;
 
-        Function f = new Function();
-
         // Perform check of archival requirements
-        public List<Archive_Requirements> Check_XLSX_Requirements(string filepath)
+        public List<Archive_Requirements> Check_XLSX_Requirements(string filepath, BackgroundWorker worker)
         {
-            bool data = Check_Value(filepath);
-            bool metadata = Check_Metadata(filepath);
             bool conformance = Check_Conformance(filepath);
+            if (conformance == false)
+            {
+                worker.ReportProgress(69, String.Format("Check: Strict conformance detected"));
+            }
+            else if (conformance == true)
+            {
+                worker.ReportProgress(69, String.Format("Check: Transitional conformance detected"));
+            }
+
             int connections = Check_DataConnections(filepath);
+            if (connections > 0)
+            {
+                worker.ReportProgress(69, String.Format($"Check: {connections} data connections detected"));
+            }
+
             int cellreferences = Check_ExternalCellReferences(filepath);
+            if (cellreferences > 0)
+            {
+                worker.ReportProgress(69, String.Format($"Check: {cellreferences} external cell references detected"));
+            }
+
             int rtdfunctions = Check_RTDFunctions(filepath);
-            int printersettings = Check_PrinterSettings(filepath);
+            if (rtdfunctions > 0)
+            {
+                worker.ReportProgress(69, String.Format($"Check: {rtdfunctions} RealTimeData functions detected"));
+            }
+
             int extobjects = Check_ExternalObjects(filepath);
-            bool activesheet = Check_ActiveSheet(filepath);
-            bool absolutepath = Check_AbsolutePath(filepath);
+            if (extobjects > 0)
+            {
+                worker.ReportProgress(69, String.Format($"Check: {extobjects} external objects detected"));
+            }
+
             int embedobj = Check_EmbeddedObjects(filepath);
+            if (embedobj > 0)
+            {
+                worker.ReportProgress(69, String.Format($"Check: {embedobj} embedded objects detected"));
+            }
+
+            int printersettings = Check_PrinterSettings(filepath);
+            if (printersettings > 0)
+            {
+                worker.ReportProgress(69, String.Format($"Check: {printersettings} printer settings detected"));
+            }
+
+            bool activesheet = Check_ActiveSheet(filepath);
+            if (activesheet)
+            {
+                worker.ReportProgress(69, String.Format("Check: First sheet is not active detected"));
+            }
+
+            bool absolutepath = Check_AbsolutePath(filepath);
+            if (absolutepath)
+            {
+                worker.ReportProgress(69, String.Format("Check: Absolute path to local directory detected"));
+            }
+
+            bool data = Check_Value(filepath);
+            if (data)
+            {
+                worker.ReportProgress(69, String.Format("Check: No cell values detected"));
+            }
+
+            bool metadata = Check_Metadata(filepath);
+            if (data)
+            {
+                worker.ReportProgress(69, String.Format("Check: File property information detected"));
+            }
+
             int hyperlinks = Check_Hyperlinks(filepath);
+            if (hyperlinks > 0)
+            {
+                worker.ReportProgress(69, String.Format($"Check: {hyperlinks} hyperlinks detected"));
+            }
 
             // Add information to list and return it
             List<Archive_Requirements> Arc_Req = new List<Archive_Requirements>();
             Arc_Req.Add(new Archive_Requirements { Data = data, Conformance = conformance, Connections = connections, CellReferences = cellreferences, RTDFunctions = rtdfunctions, PrinterSettings = printersettings, ExternalObj = extobjects, ActiveSheet = activesheet, AbsolutePath = absolutepath, Metadata = metadata, EmbedObj = embedobj, Hyperlinks = hyperlinks });
             return Arc_Req;
-        }
-
-        // Check for any values by checking if sheets and cell values exist
-        public bool Check_Value(string filepath)
-        {
-            bool nocellvalues = true;
-
-            // Perform check
-            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
-            {
-                if (spreadsheet.WorkbookPart.WorksheetParts != null)
-                {
-                    IEnumerable<WorksheetPart> worksheetparts = spreadsheet.WorkbookPart.WorksheetParts;
-                    foreach (WorksheetPart part in worksheetparts)
-                    {
-                        Worksheet worksheet = part.Worksheet;
-                        IEnumerable<Row> rows = worksheet.GetFirstChild<SheetData>().Elements<Row>(); // Find all rows
-                        if (rows.Count() > 0) // If any rows exist, this means cells exist
-                        {
-                            nocellvalues = false;
-                        }
-                    }
-                }
-            }
-
-            // Inform user
-            if (nocellvalues == true)
-            {
-                f.echoLine("Check: No cell values detected");
-            }
-            return nocellvalues;
         }
 
         // Check for Strict conformance
@@ -111,16 +141,6 @@ namespace GUISC
                     conformance = false;
                 }
             }
-
-            // Inform user
-            if (conformance == false)
-            {
-                f.echoLine("Check: Strict conformance detected");
-            }
-            else if (conformance == true)
-            {
-                f.echoLine("Check: Transitional conformance detected");
-            }
             return conformance;
         }
 
@@ -137,12 +157,6 @@ namespace GUISC
                 {
                     conn_count = conn.Connections.Count();
                 }
-            }
-
-            // Inform user
-            if (conn_count > 0)
-            {
-                f.echoLine($"Check: {conn_count} data connections detected");
             }
             return conn_count;
         }
@@ -182,12 +196,6 @@ namespace GUISC
                     }
                 }
             }
-
-            // Inform user
-            if (ext_cellrefs_count > 0)
-            {
-                f.echoLine($"Check: {ext_cellrefs_count} external cell references detected");
-            }
             return ext_cellrefs_count;
         }
 
@@ -204,12 +212,6 @@ namespace GUISC
                 {
                     extobj_count++;
                 }
-            }
-
-            // Inform user
-            if (extobj_count > 0)
-            {
-                f.echoLine($"Check: {extobj_count} external objects detected");
             }
             return extobj_count;
         }
@@ -247,12 +249,6 @@ namespace GUISC
                     }
                 }
             }
-
-            // Inform user
-            if (rtd_functions_count > 0)
-            {
-                //f.echoLine($"Check: {rtd_functions_count} RealTimeData functions detected");
-            }
             return rtd_functions_count;
         }
 
@@ -289,8 +285,6 @@ namespace GUISC
                 // Inform user of detected embedded objects
                 if (count_embedobj > 0)
                 {
-                    f.echoLine($"Check: {count_embedobj} embedded objects detected");
-
                     // Inform user of each OLE object
                     foreach (EmbeddedObjectPart part in ole)
                     {
@@ -321,6 +315,31 @@ namespace GUISC
             return count_embedobj;
         }
 
+        // Check for any values by checking if sheets and cell values exist
+        public bool Check_Value(string filepath)
+        {
+            bool nocellvalues = true;
+
+            // Perform check
+            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
+            {
+                if (spreadsheet.WorkbookPart.WorksheetParts != null)
+                {
+                    IEnumerable<WorksheetPart> worksheetparts = spreadsheet.WorkbookPart.WorksheetParts;
+                    foreach (WorksheetPart part in worksheetparts)
+                    {
+                        Worksheet worksheet = part.Worksheet;
+                        IEnumerable<Row> rows = worksheet.GetFirstChild<SheetData>().Elements<Row>(); // Find all rows
+                        if (rows.Count() > 0) // If any rows exist, this means cells exist
+                        {
+                            nocellvalues = false;
+                        }
+                    }
+                }
+            }
+            return nocellvalues;
+        }
+
         // Check for hyperlinks
         public int Check_Hyperlinks(string filepath)
         {
@@ -335,12 +354,6 @@ namespace GUISC
                     .ToList();
 
                 hyperlinks_count = hyperlinks.Count;
-            }
-
-            // Inform user
-            if (hyperlinks_count > 0)
-            {
-                f.echoLine($"Check: {hyperlinks_count} hyperlinks detected");
             }
             return hyperlinks_count;
         }
@@ -363,12 +376,6 @@ namespace GUISC
                 {
                     printersettings_count++;
                 }
-            }
-
-            // Inform user
-            if (printersettings_count > 0)
-            {
-                f.echoLine($"Check: {printersettings_count} printer settings detected");
             }
             return printersettings_count;
         }
@@ -397,12 +404,6 @@ namespace GUISC
                     }
                 }
             }
-
-            // Inform user
-            if (activeSheet == true)
-            {
-                f.echoLine("Check: First sheet is not active detected");
-            }
             return activeSheet;
         }
 
@@ -418,12 +419,6 @@ namespace GUISC
                 {
                     absolutepath = true;
                 }
-            }
-
-            // Inform user
-            if (absolutepath == true)
-            {
-                f.echoLine("Check: Absolute path to local directory detected");
             }
             return absolutepath;
         }
@@ -467,32 +462,7 @@ namespace GUISC
                     metadata = true;
                 }
             }
-
-            // Inform user
-            if (metadata == true)
-            {
-                f.echoLine("Check: File property information detected");
-            }
             return metadata;
-        }
-
-        // Check for readonly recommended
-        public bool Check_ReadOnlyRecommended(string filepath)
-        {
-            bool readOnlyRecommended = false;
-
-            // Perform check
-            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
-            {
-                readOnlyRecommended = spreadsheet.Features.IsReadOnly;
-            }
-
-            // Inform user
-            if (readOnlyRecommended == true)
-            {
-                f.echoLine("Check: Read only recommended detected");
-            }
-            return readOnlyRecommended;
         }
     }
 }

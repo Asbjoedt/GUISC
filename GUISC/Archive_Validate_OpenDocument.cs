@@ -12,7 +12,7 @@ namespace GUISC
 {
     public partial class Validation
     {
-        public bool? Validate_OpenDocument(string filepath)
+        public bool? Validate_OpenDocument(string filepath, BackgroundWorker worker)
         {
             bool? valid = null;
 
@@ -44,22 +44,22 @@ namespace GUISC
                 // Inform user of validation results
                 if (return_code == 0)
                 {
-                    f.echoLine("Validate: File format is invalid. Spreadsheet has no cell values");
+                    worker.ReportProgress(69, String.Format("Validate: File format is invalid. Spreadsheet has no cell values"));
                 }
                 if (return_code == 1)
                 {
-                    f.echoLine("Validate: File format validation could not be completed");
+                    worker.ReportProgress(69, String.Format("Validate: File format validation could not be completed"));
                 }
                 if (return_code == 2)
                 {
-                    f.echoLine("Validate: File format is valid");
+                    worker.ReportProgress(69, String.Format("Validate: File format is valid"));
                     valid = true;
                 }
                 return valid;
             }
             catch (Win32Exception)
             {
-                f.echoLine("Validate: File format validation requires ODF Validator and Java Development Kit");
+                worker.ReportProgress(69, String.Format("Validate: File format validation requires ODF Validator and Java Development Kit"));
                 return valid;
             }
         }

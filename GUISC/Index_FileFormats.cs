@@ -18,7 +18,7 @@ namespace GUISC
 
         public string Description { get; protected set; }
 
-        public int? Count { get; set; }
+        public int? Count { get; set; } = 0;
 
         public string? Conformance { get; protected set; }
 

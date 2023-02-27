@@ -4,24 +4,24 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Forms;
+using System.ComponentModel;
 
 namespace GUISC
 {
     public partial class Count
     {
-        Function f = new Function();
-
         // Public data types
         public static int numTOTAL, numXLSX_Strict;
 
         // Count spreadsheets
-        public string Count_Spreadsheets(string inputdir, string outputdir, bool recurse)
+        public string Count_Spreadsheets(string inputdir, string outputdir, bool recurse, BackgroundWorker worker)
         {
-            f.backgroundWorker1.ReportProgress(Function.countno, String.Format("---"));
-            f.backgroundWorker1.ReportProgress(Function.countno, String.Format("COUNT"));
-            f.backgroundWorker1.ReportProgress(Function.countno, String.Format("---"));
-            f.echoLog("COUNT");
-            f.echoLog2("---");
+            numTOTAL = 0;
+            numXLSX_Strict = 0;
+
+            worker.ReportProgress(Function.countno, String.Format("COUNT begins"));
+            worker.ReportProgress(Function.countno, String.Format("---"));
 
             //Object reference
             DirectoryInfo count = new DirectoryInfo(inputdir);
@@ -73,27 +73,26 @@ namespace GUISC
             // Inform user if no spreadsheets identified
             if (numTOTAL == 0)
             {
-                f.echoLog("No spreadsheets identified");
-                f.echoLog("CLISC ended");
-                f.echoLog("---");
-                throw new Exception();
+                worker.ReportProgress(100, String.Format("No spreadsheets identified"));
+                worker.ReportProgress(100, String.Format("---"));
+                return "No spreadsheets identified";
             }
             else
             {
                 // Show count to user
-                f.echoLog("# Extension - Name");
+                worker.ReportProgress(Function.countno, String.Format("# Extension - Name"));
                 foreach (fileFormatIndex fileformat in fileformats)
                 {
                     if (fileformat.Conformance == null)
                     {
-                        f.echoLine($"{fileformat.Count} {fileformat.Extension} - {fileformat.Description}");
+                        worker.ReportProgress(Function.countno, String.Format($"{fileformat.Count} {fileformat.Extension} - {fileformat.Description}"));
                     }
                     else if (fileformat.Conformance != null)
                     {
-                        f.echoLine($"--> {fileformat.Count} {fileformat.Extension} have {fileformat.Conformance} conformance");
+                        worker.ReportProgress(Function.countno, String.Format($"--> {fileformat.Count} {fileformat.Extension} have {fileformat.Conformance} conformance"));
                     }
                 }
-                f.echoLog($"{numTOTAL} spreadsheets in total");
+                worker.ReportProgress(Function.countno, String.Format($"{numTOTAL} spreadsheets in total"));
 
                 // Create new directory to output results in CSV
                 Results res = new Results();
@@ -115,6 +114,7 @@ namespace GUISC
                 Results.CSV_filepath = Results_Directory + "\\1_Count_Results.csv";
                 File.WriteAllText(Results.CSV_filepath, csv.ToString(), Encoding.UTF8);
 
+                worker.ReportProgress(Function.countno, String.Format("---"));
                 return Results_Directory;
             }
         }

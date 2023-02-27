@@ -9,48 +9,47 @@ using System.Threading.Tasks;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
 using DocumentFormat.OpenXml.Office2013.ExcelAc;
+using System.ComponentModel;
 
 namespace GUISC
 {
     public partial class Archive_Requirements
     {
         // Change .xlsx according to archival requirements
-        public void Change_XLSX_Requirements(List<Archive_Requirements> arcReq, string filepath)
+        public void Change_XLSX_Requirements(List<Archive_Requirements> arcReq, string filepath, BackgroundWorker worker)
         {
-            Function f = new Function();
-
             foreach (var item in arcReq)
             {
                 if (item.Conformance == true)
                 {
                     Change_ConformanceToStrict_ExcelInterop(filepath);
-                    f.echoLine("Change: Conformance was changed to Strict");
+                    worker.ReportProgress(69, String.Format("Change: Conformance was changed to Strict"));
                 }
                 if (item.Connections > 0)
                 {
                     int success = Remove_DataConnections(filepath);
-                    f.echoLine($"Change: {success} data connections were removed");
+                    worker.ReportProgress(69, String.Format($"Change: {success} data connections were removed"));
                 }
                 if (item.CellReferences > 0)
                 {
                     int success = Remove_ExternalCellReferences(filepath);
-                    f.echoLine($"--> Change: {success} cell references were removed");
+                    worker.ReportProgress(69, String.Format($"Change: {success} cell references were removed"));
                 }
                 if (item.RTDFunctions > 0)
                 {
                     int success = Remove_RTDFunctions(filepath);
-                    f.echoLine($"--> Change: {success} RTD functions were removed");
+                    worker.ReportProgress(69, String.Format($"Change: {success} RTD functions were removed"));
                 }
                 if (item.ExternalObj > 0)
                 {
                     Tuple<int, int> success = CopyAndRemove_ExternalObjects(filepath);
                     if (success.Item1 > 0)
                     {
-                        f.echoLine($"--> Change: {success.Item1} external object references were copied to new subfolder and removed");
+                        worker.ReportProgress(69, String.Format($"Change: {success.Item1} external object references were copied to new subfolder and removed"));
                     }
                     if (success.Item2 > 0)
                     {
-                        f.echoLine($"--> ChangeError: {success.Item2} external object references were removed but NOT copied to new subfolder \"External objects\"");
+                        worker.ReportProgress(69, String.Format($"ChangeError: {success.Item2} external object references were removed but NOT copied to new subfolder \"External objects\""));
                     }
                 }
                 if (item.EmbedObj > 0)
@@ -58,15 +57,15 @@ namespace GUISC
                     Tuple<int, int, int> success = Convert_EmbeddedObjects(filepath);
                     if (success.Item1 > 0)
                     {
-                        f.echoLine($"--> Extract: {success.Item1} original embedded objects were saved to new \"Embedded objects\" subfolder.");
+                        worker.ReportProgress(69, String.Format($"Extract: {success.Item1} original embedded objects were saved to new \"Embedded objects\" subfolder."));
                     }
                     if (success.Item2 > 0)
                     {
-                        f.echoLine($"--> Change: {success.Item2} embedded objects were converted");
+                        worker.ReportProgress(69, String.Format($"Change: {success.Item2} embedded objects were converted"));
                     }
                     if (success.Item3 > 0)
                     {
-                        f.echoLine($"--> ChangeError: {success.Item3} embedded objects could not be processed");
+                        worker.ReportProgress(69, String.Format($"ChangeError: {success.Item3} embedded objects could not be processed"));
                     }
                 }
                 if (Function.fullcompliance)
@@ -74,23 +73,23 @@ namespace GUISC
                     if (item.Metadata == true)
                     {
                         int success = Remove_Metadata(filepath);
-                        f.echoLine($"--> Change: {success} file property information were removed and saved to sidecar file");
+                        worker.ReportProgress(69, String.Format($"Change: {success} file property information were removed and saved to sidecar file"));
                     }
                     if (item.PrinterSettings > 0)
                     {
                         int success = Remove_PrinterSettings(filepath);
-                        f.echoLine($"--> Change: {success} printer settings were removed");
+                        worker.ReportProgress(69, String.Format($"Change: {success} printer settings were removed"));
                     }
                     if (item.ActiveSheet == true)
                     {
                         bool success = Activate_FirstSheet(filepath);
                         if (success)
                         {
-                            f.echoLine("--> Change: First sheet was activated");
+                            worker.ReportProgress(69, String.Format("Change: First sheet was activated"));
                         }
                         else
                         {
-                            f.echoLine("--> ChangeError: First sheet was NOT activated");
+                            worker.ReportProgress(69, String.Format("ChangeError: First sheet was NOT activated"));
                         }
                     }
                     if (item.AbsolutePath == true)
@@ -98,41 +97,18 @@ namespace GUISC
                         bool success = Remove_AbsolutePath(filepath);
                         if (success)
                         {
-                            f.echoLine("--> Change: Absolute path to local directory was removed");
+                            worker.ReportProgress(69, String.Format("Change: Absolute path to local directory was removed"));
                         }
                         else
                         {
-                            f.echoLine("--> ChangeError: Absolute path to local directory was NOT removed");
+                            worker.ReportProgress(69, String.Format("ChangeError: Absolute path to local directory was NOT removed"));
                         }
                     }
                     if (item.Hyperlinks > 0)
                     {
                         int success = Extract_Hyperlinks(filepath);
-                        f.echoLine($"--> Extract: {success} cell hyperlinks were extracted");
+                        worker.ReportProgress(69, String.Format($"Extract: {success} cell hyperlinks were extracted"));
                     }
-                }
-            }
-        }
-
-        // Work in progress
-        // Change conformance to Strict
-        public void Change_ConformanceToStrict(string filepath)
-        {
-            // Create list of namespaces
-            List<namespaceIndex> namespaces = namespaceIndex.Create_Namespaces_Index();
-
-            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
-            {
-                WorkbookPart wbPart = spreadsheet.WorkbookPart;
-                Workbook workbook = wbPart.Workbook;
-                // If Transitional
-                if (workbook.Conformance == null || workbook.Conformance != "strict")
-                {
-                    // Change conformance class
-                    workbook.Conformance.Value = ConformanceClass.Enumstrict;
-
-                    // Add vml urn namespace to workbook.xml
-                    workbook.AddNamespaceDeclaration("v", "urn:schemas-microsoft-com:vml");
                 }
             }
         }

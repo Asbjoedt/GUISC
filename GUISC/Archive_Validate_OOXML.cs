@@ -35,10 +35,8 @@ namespace GUISC
 
         public string? Error_RelatedNode_InnerText { get; set; }
 
-        Function f = new Function();
-
         // Validate Open Office XML file formats
-        public List<Validation> Validate_OOXML(string org_filepath, string filepath, string Results_Directory)
+        public List<Validation> Validate_OOXML(string org_filepath, string filepath, string Results_Directory, BackgroundWorker worker)
         {
             List<Validation> results = new List<Validation>();
 
@@ -52,12 +50,12 @@ namespace GUISC
 
                 if (validation_errors.Any()) // If errors, inform user & return results
                 {
-                    f.echoLine($"Validate: File format is invalid - Spreadsheet has {error_count} validation errors");
+                    worker.ReportProgress(69, String.Format($"Validate: File format is invalid - Spreadsheet has {error_count} validation errors"));
 
                     foreach (var error in validation_errors)
                     {
                         error_number++;
-                        f.echoLine("Error " + error_number);
+                        worker.ReportProgress(69, String.Format("Error " + error_number));
 
                         string? er_rel_1 = "";
                         string? er_rel_2 = "";
@@ -76,7 +74,7 @@ namespace GUISC
                 }
                 else
                 {
-                    f.echoLine("Validate: File format is valid"); // Inform user
+                    worker.ReportProgress(69, String.Format("Validate: File format is valid"));
 
                     Archive.valid_files++; // Add to number of valid files
 
@@ -89,7 +87,7 @@ namespace GUISC
         }
 
         // Validate Open Office XML file formats and ignoring bug in Open XML SDK, which reports errors on Strict .xlsx
-        public List<Validation> Validate_OOXML_Hack(string org_filepath, string filepath, string Results_Directory)
+        public List<Validation> Validate_OOXML_Hack(string org_filepath, string filepath, string Results_Directory, BackgroundWorker worker)
         {
             List<Validation> results = new List<Validation>();
 
@@ -105,7 +103,7 @@ namespace GUISC
                 {
                     if (error_count >= 45)
                     {
-                        f.echoLine($"Validate: File format is valid - {error_count} incorrectly reported validation errors have been suppressed"); // Inform user
+                        worker.ReportProgress(69, String.Format($"Validate: File format is valid - {error_count} incorrectly reported validation errors have been suppressed"));
 
                         Archive.valid_files++; // Add to number of valid files
 
@@ -118,7 +116,7 @@ namespace GUISC
                     }
                     else
                     {
-                        f.echoLine($"Validate: File format is invalid - Spreadsheet has {error_count} validation errors");
+                        worker.ReportProgress(69, String.Format($"Validate: File format is invalid - Spreadsheet has {error_count} validation errors"));
 
                         foreach (var error in validation_errors)
                         {
@@ -131,7 +129,7 @@ namespace GUISC
                                     break;
                                 default:
                                     error_number++;
-                                    f.echoLine("Error " + error_number);
+                                    worker.ReportProgress(69, String.Format("Error " + error_number));
 
                                     string? er_rel_1 = "";
                                     string? er_rel_2 = "";
@@ -152,7 +150,7 @@ namespace GUISC
                 }
                 else
                 {
-                    f.echoLine("Validate: File format is valid"); // Inform user
+                    worker.ReportProgress(69, String.Format("Validate: File format is valid"));
 
                     Archive.valid_files++; // Add to number of valid files
 

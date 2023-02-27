@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -14,7 +15,7 @@ namespace GUISC
         Function f = new Function();
 
         // Perform all repairs
-        public void Repair_OOXML(string filepath)
+        public void Repair_OOXML(string filepath, BackgroundWorker worker)
         {
             bool repair_1 = Repair_VBA(filepath);
             bool repair_2 = Repair_CustomUI(filepath);
@@ -23,7 +24,7 @@ namespace GUISC
             // If any repair method has been performed
             if (repair_1 || repair_2 || repair_3)
             {
-                f.echoLine("Repair: Spreadsheet was repaired");
+                worker.ReportProgress(69, String.Format("Repair: Spreadsheet was repaired"));
             }
         }
 

@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace GUISC
 {
     public partial class Conversion
     {
         // Convert legacy Excel files to .xlsx Transitional using Microsoft Office Interop Excel
-        public bool Convert_ExcelInterop(string input_filepath, string output_filepath)
+        public bool Convert_ExcelInterop(string input_filepath, string output_filepath, BackgroundWorker worker)
         {
             bool convert_success = false;
 
@@ -32,7 +33,7 @@ namespace GUISC
 
             // Repair spreadsheet
             Repair rep = new Repair();
-            rep.Repair_OOXML(output_filepath);
+            rep.Repair_OOXML(output_filepath, worker);
 
             // Return success
             convert_success = true;

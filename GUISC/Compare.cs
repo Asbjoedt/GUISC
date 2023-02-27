@@ -13,14 +13,12 @@ namespace GUISC
         // Comparison data types
         public static int numTOTAL_compare = 0;
         public static int numTOTAL_diff = 0;
-        Function f = new Function();
 
         // Compare spreadsheets
-        public void Compare_Spreadsheets(string function, string Results_Directory, List<fileIndex> File_List)
+        public void Compare_Spreadsheets(string function, string Results_Directory, List<fileIndex> File_List, BackgroundWorker worker)
         {
-            f.echoLog("---");
-            f.echoLog("COMPARE");
-            f.echoLog("---");
+            worker.ReportProgress(Function.compareno, String.Format("COMPARE begins"));
+            worker.ReportProgress(Function.compareno, String.Format("---"));
 
             // Open CSV file to log results
             var csv = new StringBuilder();
@@ -43,8 +41,8 @@ namespace GUISC
                     if (File.Exists(xlsx_filepath) && Path.GetExtension(org_filepath).ToLower() != ".xlsb")
                     {
                         // Inform user of comparison
-                        f.echoLine(org_filepath);
-                        f.echoLine($"Comparing to: {xlsx_filepath}");
+                        worker.ReportProgress(69, String.Format(org_filepath));
+                        worker.ReportProgress(69, String.Format($"Comparing to: {xlsx_filepath}"));
 
                         int return_code;
 
@@ -62,32 +60,32 @@ namespace GUISC
                         {
                             numTOTAL_compare++;
                             compare_success = true;
-                            f.echoLine("Cell values identical: " + compare_success);
+                            worker.ReportProgress(69, String.Format("Cell values identical: " + compare_success));
                         }
                         if (return_code == 12 || return_code == 13 || return_code == 14)
                         {
                             numTOTAL_compare++;
                             numTOTAL_diff++;
                             compare_success = false;
-                            f.echoLine("Cell values identical: " + compare_success);
+                            worker.ReportProgress(69, String.Format("Cell values identical: " + compare_success));
                         }
                         if (return_code == 11)
                         {
                             compare_success = null;
                             error_message = "Original file cannot be compared";
-                            f.echoLine(error_message);
+                            worker.ReportProgress(69, String.Format(error_message));
                         }
                         if (return_code == 100)
                         {
                             compare_success = null;
                             error_message = "Unknown error";
-                            f.echoLine(error_message);
+                            worker.ReportProgress(69, String.Format(error_message));
                         }
                         if (return_code == 104)
                         {
                             compare_success = null;
                             error_message = "Beyond Compare 4 trial period expired";
-                            f.echoLog(error_message);
+                            worker.ReportProgress(69, String.Format(error_message));
                         }
 
                         // Output result in open CSV file
@@ -98,13 +96,15 @@ namespace GUISC
             }
             catch (Win32Exception)
             {
-                f.echoLog("Beyond Compare 4 is not installed");
-                f.echoLog("Comparison ended");
+                worker.ReportProgress(69, String.Format("Beyond Compare 4 is not installed"));
+                worker.ReportProgress(69, String.Format("Comparison ended"));
             }
 
             // Close CSV file to log results
             Results.CSV_filepath = Results_Directory + "\\3_Compare_Results.csv";
             File.WriteAllText(Results.CSV_filepath, csv.ToString(), Encoding.UTF8);
+
+            worker.ReportProgress(Function.compareno, String.Format("---"));
         }
     }
 }

@@ -17,7 +17,7 @@ namespace GUISC
         public static string function = "";
         public static bool recurse = false;
         public static bool fullcompliance = false;
-        public static int countno = 0;
+        public static int countno;
         public static int convertno;
         public static int compareno;
         public static int archiveno;
@@ -32,15 +32,17 @@ namespace GUISC
         // Run GUISC methods on click
         private void Run_Click(object sender, EventArgs e)
         {
+            // Clear textboxes
+            resultsWindow.Clear();
+            currentLine.Clear();
+
             // Begin process timer
             timer.Start();
 
-            // Clear textboxes
-            currentLine.Clear();
-            resultsWindow.Clear();
-
             // Inform user of start
-            resultsWindow.AppendText("GUISC started");
+            resultsWindow.AppendText("---");
+            resultsWindow.AppendText(Environment.NewLine + "GUISC started");
+            resultsWindow.AppendText(Environment.NewLine + "---");
 
             // Disable input buttons
             Disable_Input_Buttons();
@@ -59,7 +61,7 @@ namespace GUISC
             BackgroundWorker worker = sender as BackgroundWorker;
 
             // Do backgroundwork
-            Run_Switch();
+            Run_Switch(worker);
 
             // Check if there is a request to cancel the process
             if (backgroundWorker1.CancellationPending)
@@ -80,15 +82,18 @@ namespace GUISC
         {
             if (e.Cancelled)
             {
+                resultsWindow.AppendText(Environment.NewLine + "---");
                 resultsWindow.AppendText(Environment.NewLine + "GUISC was cancelled");
             }
             else if (e.Error != null)
             {
+                resultsWindow.AppendText(Environment.NewLine + "---");
                 resultsWindow.AppendText(Environment.NewLine + "Error. Details: " + (e.Error as Exception).ToString());
             }
             else
             {
                 resultsWindow.AppendText(Environment.NewLine + "GUISC finished");
+                resultsWindow.AppendText(Environment.NewLine + "---");
             }
 
             // Clear process line
@@ -105,13 +110,20 @@ namespace GUISC
         // Receive console inputs from backgroundworker by using ProgressChanged
         private void backgroundWorker1_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            progressBar.Value = e.ProgressPercentage;
             string message = e.UserState as string;
-            resultsWindow.AppendText(Environment.NewLine + message);
+            if (e.ProgressPercentage == 69)
+            {
+                currentLine.Text = message;
+            }
+            else
+            {
+                progressBar.Value = e.ProgressPercentage;
+                resultsWindow.AppendText(Environment.NewLine + message);
+            }
         }
 
         // Switch for methods to run
-        private void Run_Switch()
+        private void Run_Switch(BackgroundWorker worker)
         {
             // Create object instances
             Count cou = new Count();
@@ -124,29 +136,40 @@ namespace GUISC
             switch (function)
             {
                 case "Count":
-                    cou.Count_Spreadsheets(inputdir, outputdir, recurse);
-                    res.Count_Results();
+                    resultsDirectory = cou.Count_Spreadsheets(inputdir, outputdir, recurse, worker);
                     break;
 
                 case "CountConvert":
-                    resultsDirectory = cou.Count_Spreadsheets(inputdir, outputdir, recurse);
-                    con.Convert_Spreadsheets(function, inputdir, recurse, resultsDirectory);
-                    res.Convert_Results();
+                    resultsDirectory = cou.Count_Spreadsheets(inputdir, outputdir, recurse, worker);
+                    if (resultsDirectory == "No spreadsheets identified")
+                    {
+                        break;
+                    }
+                    con.Convert_Spreadsheets(function, inputdir, recurse, resultsDirectory, worker);
+                    res.Convert_Results(worker);
                     break;
 
                 case "CountConvertCompare":
-                    resultsDirectory = cou.Count_Spreadsheets(inputdir, outputdir, recurse);
-                    List<fileIndex> fileList = con.Convert_Spreadsheets(function, inputdir, recurse, resultsDirectory);
-                    com.Compare_Spreadsheets(function, resultsDirectory, fileList);
-                    res.Compare_Results();
+                    resultsDirectory = cou.Count_Spreadsheets(inputdir, outputdir, recurse, worker);
+                    if (resultsDirectory == "No spreadsheets identified")
+                    {
+                        break;
+                    }
+                    List<fileIndex> fileList = con.Convert_Spreadsheets(function, inputdir, recurse, resultsDirectory, worker);
+                    com.Compare_Spreadsheets(function, resultsDirectory, fileList, worker);
+                    res.Compare_Results(worker);
                     break;
 
                 case "CountConvertCompareArchive":
-                    resultsDirectory = cou.Count_Spreadsheets(inputdir, outputdir, recurse);
-                    fileList = con.Convert_Spreadsheets(function, inputdir, recurse, resultsDirectory);
-                    com.Compare_Spreadsheets(function, resultsDirectory, fileList);
-                    arc.Archive_Spreadsheets(resultsDirectory, fileList);
-                    res.Archive_Results();
+                    resultsDirectory = cou.Count_Spreadsheets(inputdir, outputdir, recurse, worker);
+                    if (resultsDirectory == "No spreadsheets identified")
+                    {
+                        break;
+                    }
+                    fileList = con.Convert_Spreadsheets(function, inputdir, recurse, resultsDirectory, worker);
+                    com.Compare_Spreadsheets(function, resultsDirectory, fileList, worker);
+                    arc.Archive_Spreadsheets(resultsDirectory, fileList, worker);
+                    res.Archive_Results(worker);
                     break;
             }
         }
@@ -191,7 +214,14 @@ namespace GUISC
         // Set recurse
         private void Recurse_CheckedChanged(object sender, EventArgs e)
         {
-            recurse = true;
+            if (!recurse)
+            {
+                recurse = true;
+            }
+            else if (recurse)
+            {
+                recurse = false;
+            }
         }
 
         // Set function
@@ -264,51 +294,34 @@ namespace GUISC
             timeWindow.Text = String.Format($"{time:dd\\:hh\\:mm\\:ss}");
         }
 
-        delegate void myDelegate(string name);
-        public void echoLog2(string message)
-        {
-            if (this.InvokeRequired)
-            {
-                myDelegate textWriter = new myDelegate(echoLog2);
-                this.Invoke(textWriter, new object[] { message });
-            }
-            else
-            {
-                resultsWindow.Text = message;
-            }
-        }
-
-        // Update process line
-        public void echoLine(string text)
-        { 
-            currentLine.Text = text;
-        }
-
-        // Update process log
-        public void echoLog(string text)
-        {
-            resultsWindow.AppendText(Environment.NewLine + text);
-        }
-
+        // Set progress percentage based on function
         public void ProgressPercentage()
         {
+            if (function == "Count")
+            {
+                countno = 100;
+            }
             if (function == "CountConvert")
             {
+                countno = 10;
                 convertno = 50;
             }
             else if (function == "CountConvertCompare")
             {
-                convertno = 33;
-                compareno = 66;
+                countno = 10;
+                convertno = 50;
+                compareno = 75;
             }
             else if (function == "CountConvertCompareArchive")
             {
-                convertno = 25;
-                compareno = 50;
-                archiveno = 75;
+                countno = 10;
+                convertno = 40;
+                compareno = 60;
+                archiveno = 80;
             }
         }
 
+        // Set if all archival requirements are to be complied
         private void fullCompliance_CheckedChanged(object sender, EventArgs e)
         {
             fullcompliance = true;

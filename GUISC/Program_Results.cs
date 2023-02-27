@@ -1,6 +1,7 @@
 ﻿using GUISC;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,78 +10,74 @@ namespace GUISC
 {
     public partial class Results
     {
-        Function f = new Function();
-
         // Methods for results reporting
-        public void Count_Results()
+        public void Count_Results(BackgroundWorker worker)
         {
-            f.echoLog("---");
-            f.echoLog("CLISC SUMMARY");
-            f.echoLog("---");
-            f.echoLog($"COUNT: {Count.numTOTAL} spreadsheet files in total");
-            f.echoLog($"Results saved to CSV log in filepath: {Results.CSV_filepath}");
+            worker.ReportProgress(100, String.Format("SUMMARY"));
+            worker.ReportProgress(100, String.Format("---"));
+            worker.ReportProgress(100, String.Format($"COUNT: {Count.numTOTAL} spreadsheet files in total"));
+            worker.ReportProgress(100, String.Format("---"));
         }
 
-        public void Convert_Results()
+        public void Convert_Results(BackgroundWorker worker)
         {
             // Calculate fails
             int fail_conversion = Count.numTOTAL - Conversion.numCOMPLETE;
 
-            f.echoLog("---");
-            f.echoLog("CLISC SUMMARY");
-            f.echoLog("---");
-            f.echoLog($"COUNT: {Count.numTOTAL} spreadsheet files in total");
-            f.echoLog($"CONVERT: {fail_conversion} of {Count.numTOTAL} spreadsheets failed conversion");
-            f.echoLog($"Results saved to CSV log in filepath: {Results.CSV_filepath}");
+            worker.ReportProgress(100, String.Format("SUMMARY"));
+            worker.ReportProgress(100, String.Format("---"));
+            worker.ReportProgress(100, String.Format($"COUNT: {Count.numTOTAL} spreadsheet files in total"));
+            worker.ReportProgress(100, String.Format($"CONVERT: {fail_conversion} of {Count.numTOTAL} spreadsheets failed conversion"));
+            worker.ReportProgress(100, String.Format("---"));
         }
-        public void Compare_Results()
+        public void Compare_Results(BackgroundWorker worker)
         {
             // Calculate fails
             int fail_conversion = Count.numTOTAL - Conversion.numCOMPLETE;
             int fail_comparison = Conversion.numCOMPLETE - Compare.numTOTAL_compare;
 
-            f.echoLog("---");
-            f.echoLog("CLISC SUMMARY");
-            f.echoLog("---");
-            f.echoLog($"COUNT: {Count.numTOTAL} spreadsheet files in total");
-            f.echoLog($"CONVERT: {fail_conversion} of {Count.numTOTAL} spreadsheets failed conversion");
-            f.echoLog($"COMPARE: {fail_comparison} of {Conversion.numCOMPLETE} converted spreadsheets failed comparison");
-            f.echoLog($"COMPARE: {Compare.numTOTAL_diff} of {Compare.numTOTAL_compare} compared spreadsheets have cell value differences");
-
+            worker.ReportProgress(100, String.Format("SUMMARY"));
+            worker.ReportProgress(100, String.Format("---"));
+            worker.ReportProgress(100, String.Format($"COUNT: {Count.numTOTAL} spreadsheet files in total"));
+            worker.ReportProgress(100, String.Format($"CONVERT: {fail_conversion} of {Count.numTOTAL} spreadsheets failed conversion"));
+            worker.ReportProgress(100, String.Format($"COMPARE: {fail_comparison} of {Conversion.numCOMPLETE} converted spreadsheets failed comparison"));
+            worker.ReportProgress(100, String.Format($"COMPARE: {Compare.numTOTAL_diff} of {Compare.numTOTAL_compare} compared spreadsheets have cell value differences"));
+            worker.ReportProgress(100, String.Format("---"));
         }
-        public void Archive_Results()
+        public void Archive_Results(BackgroundWorker worker)
         {
+            // Calculate fails
             int fail_conversion = Count.numTOTAL - Conversion.numCOMPLETE;
             int fail_comparison = Conversion.numCOMPLETE - Compare.numTOTAL_compare;
 
-            f.echoLog("---");
-            f.echoLog("CLISC SUMMARY");
-            f.echoLog("---");
-            f.echoLog($"COUNT: {Count.numTOTAL} spreadsheets");
-            f.echoLog($"CONVERT: {fail_conversion} of {Count.numTOTAL} spreadsheets failed conversion");
-            f.echoLog($"COMPARE: {fail_comparison} of {Conversion.numCOMPLETE} converted spreadsheets failed comparison");
-            f.echoLog($"COMPARE: {Compare.numTOTAL_diff} of {Compare.numTOTAL_compare} compared spreadsheets have cell value differences");
-            f.echoLog($"ARCHIVE: {Archive.invalid_files} of {Conversion.numCOMPLETE} converted spreadsheets have invalid file formats");
-            f.echoLog($"ARCHIVE: {Archive.connections_files} of {Conversion.numCOMPLETE} converted spreadsheets had data connections - Data connections were removed");
-            f.echoLog($"ARCHIVE: {Archive.cellreferences_files} of {Conversion.numCOMPLETE} converted spreadsheets had external cell references - External cell references were removed");
-            f.echoLog($"ARCHIVE: {Archive.rtdfunctions_files} of {Conversion.numCOMPLETE} converted spreadsheets had RTD functions - RTD functions were removed");
-            f.echoLog($"ARCHIVE: {Archive.extobj_files} of {Conversion.numCOMPLETE} converted spreadsheets had external object references - External object references were removed");
-            f.echoLog($"ARCHIVE: {Archive.embedobj_files} of {Conversion.numCOMPLETE} converted spreadsheets have embedded objects  - Embedded IMAGE objects were converted to .tiff");
-            f.echoLog($"ARCHIVE: {Archive.cellvalue_files} of {Conversion.numCOMPLETE} converted spreadsheets had no cell values");
+            worker.ReportProgress(100, String.Format("SUMMARY"));
+            worker.ReportProgress(100, String.Format("---"));
+            worker.ReportProgress(100, String.Format($"COUNT: {Count.numTOTAL} spreadsheet files in total"));
+            worker.ReportProgress(100, String.Format($"CONVERT: {fail_conversion} of {Count.numTOTAL} spreadsheets failed conversion"));
+            worker.ReportProgress(100, String.Format($"COMPARE: {fail_comparison} of {Conversion.numCOMPLETE} converted spreadsheets failed comparison"));
+            worker.ReportProgress(100, String.Format($"COMPARE: {Compare.numTOTAL_diff} of {Compare.numTOTAL_compare} compared spreadsheets have cell value differences"));
+            worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.invalid_files} of {Conversion.numCOMPLETE} converted spreadsheets have invalid file formats"));
+            worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.connections_files} of {Conversion.numCOMPLETE} converted spreadsheets had data connections - Data connections were removed"));
+            worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.cellreferences_files} of {Conversion.numCOMPLETE} converted spreadsheets had external cell references - External cell references were removed"));
+            worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.rtdfunctions_files} of {Conversion.numCOMPLETE} converted spreadsheets had RTD functions - RTD functions were removed"));
+            worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.extobj_files} of {Conversion.numCOMPLETE} converted spreadsheets had external object references - External object references were removed"));
+            worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.embedobj_files} of {Conversion.numCOMPLETE} converted spreadsheets have embedded objects  - Embedded IMAGE objects were converted to .tiff"));
+            worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.cellvalue_files} of {Conversion.numCOMPLETE} converted spreadsheets had no cell values"));
             if (Function.fullcompliance)
             {
-                f.echoLog($"ARCHIVE: {Archive.printersettings_files} of {Conversion.numCOMPLETE} converted spreadsheets had printer settings - Printer settings were removed");
-                f.echoLog($"ARCHIVE: {Archive.activesheet_files} of {Conversion.numCOMPLETE} converted spreadsheets did not have active first sheet - Active sheet was changed");
-                f.echoLog($"ARCHIVE: {Archive.metadata_files} of {Conversion.numCOMPLETE} converted spreadsheets have metadata  - Metadata were extracted and removed");
-                f.echoLog($"ARCHIVE: {Archive.hyperlinks_files} of {Conversion.numCOMPLETE} converted spreadsheets have hyperlinks - Hyperlinks were extracted");
+                worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.printersettings_files} of {Conversion.numCOMPLETE} converted spreadsheets had printer settings - Printer settings were removed"));
+                worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.activesheet_files} of {Conversion.numCOMPLETE} converted spreadsheets did not have active first sheet - Active sheet was changed"));
+                worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.metadata_files} of {Conversion.numCOMPLETE} converted spreadsheets have metadata  - Metadata were extracted and removed"));
+                worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.hyperlinks_files} of {Conversion.numCOMPLETE} converted spreadsheets have hyperlinks - Hyperlinks were extracted"));
             }
             else
             {
-                f.echoLog($"ARCHIVE: {Archive.printersettings_files} of {Conversion.numCOMPLETE} converted spreadsheets had printer settings - Nothing was done");
-                f.echoLog($"ARCHIVE: {Archive.activesheet_files} of {Conversion.numCOMPLETE} converted spreadsheets did not have active first sheet - Nothing was done");
-                f.echoLog($"ARCHIVE: {Archive.metadata_files} of {Conversion.numCOMPLETE} converted spreadsheets have metadata - Nothing was done");
-                f.echoLog($"ARCHIVE: {Archive.hyperlinks_files} of {Conversion.numCOMPLETE} converted spreadsheets have hyperlinks - Nothing was done");
+                worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.printersettings_files} of {Conversion.numCOMPLETE} converted spreadsheets had printer settings - Nothing was done"));
+                worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.activesheet_files} of {Conversion.numCOMPLETE} converted spreadsheets did not have active first sheet - Nothing was done"));
+                worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.metadata_files} of {Conversion.numCOMPLETE} converted spreadsheets have metadata - Nothing was done"));
+                worker.ReportProgress(100, String.Format($"ARCHIVE: {Archive.hyperlinks_files} of {Conversion.numCOMPLETE} converted spreadsheets have hyperlinks - Nothing was done"));
             }
+            worker.ReportProgress(100, String.Format("---"));
         }
     }
 }

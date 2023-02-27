@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.IO;
 using System.IO.Packaging;
 using System.Linq;
@@ -12,7 +13,7 @@ namespace GUISC
     public partial class Conversion
     {
         // Convert to .xlsx Transitional
-        public bool ConvertToXLSX(string input_filepath, string output_filepath)
+        public bool ConvertToXLSX(string input_filepath, string output_filepath, BackgroundWorker worker)
         {
             bool convert_success = false;
 
@@ -36,7 +37,7 @@ namespace GUISC
 
             // Repair spreadsheet
             Repair rep = new Repair();
-            rep.Repair_OOXML(output_filepath);
+            rep.Repair_OOXML(output_filepath, worker);
 
             // Return success
             return convert_success = true;

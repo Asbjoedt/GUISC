@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
@@ -23,10 +24,9 @@ namespace GUISC
         public static int hyperlinks_files = 0;
         public static int valid_files = 0;
         public static int invalid_files = 0;
-        Function f = new Function();
 
         // Archive the spreadsheets according to advanced archival requirements
-        public void Archive_Spreadsheets(string Results_Directory, List<fileIndex> File_List)
+        public void Archive_Spreadsheets(string Results_Directory, List<fileIndex> File_List, BackgroundWorker worker)
         {
             string file_folder = "";
             string org_filepath = "";
@@ -46,10 +46,8 @@ namespace GUISC
             bool? archive_req_accept = null;
 
             // Inform user of beginning of archiving
-            f.backgroundWorker1.ReportProgress(75, String.Format("---"));
-            f.echoLog("---");
-            f.echoLog("ARCHIVE");
-            f.echoLog("---");
+            worker.ReportProgress(Function.archiveno, String.Format("ARCHIVE begins"));
+            worker.ReportProgress(Function.archiveno, String.Format("---"));
 
             // Open CSV file to log archive results
             var csv = new StringBuilder();
@@ -83,16 +81,16 @@ namespace GUISC
                     try
                     {
                         // Inform user
-                        f.echoLine(org_filepath); // Inform user of original filepath
+                        worker.ReportProgress(69, String.Format(org_filepath)); // Inform user of original filepath
                         string folder_number = Path.GetFileName(Path.GetDirectoryName(xlsx_conv_filepath));
-                        f.echoLine($"Analyzing: {folder_number}\\1.xlsx"); // Inform user of analyzed filepath
+                        worker.ReportProgress(69, String.Format($"Analyzing: {folder_number}\\1.xlsx")); // Inform user of analyzed filepath
 
                         // Check .xlsx for archival requirements
                         Archive_Requirements arc = new Archive_Requirements();
-                        List<Archive_Requirements> arcReq = arc.Check_XLSX_Requirements(xlsx_conv_filepath);
+                        List<Archive_Requirements> arcReq = arc.Check_XLSX_Requirements(xlsx_conv_filepath, worker);
 
                         // Change .xlsx according to archival requirements
-                        arc.Change_XLSX_Requirements(arcReq, xlsx_conv_filepath);
+                        arc.Change_XLSX_Requirements(arcReq, xlsx_conv_filepath, worker);
 
                         // Make archival requirements true
                         archive_req_accept = true;
@@ -157,7 +155,7 @@ namespace GUISC
 
                         // Validate
                         Validation validate = new Validation();
-                        List<Validation> xlsx_validation_list = validate.Validate_OOXML_Hack(org_filepath, xlsx_conv_filepath, Results_Directory);
+                        List<Validation> xlsx_validation_list = validate.Validate_OOXML_Hack(org_filepath, xlsx_conv_filepath, Results_Directory, worker);
 
                         xlsx_errors_count = xlsx_validation_list.Count;
 
@@ -185,16 +183,15 @@ namespace GUISC
 
                     // Calculate checksum
                     xlsx_conv_checksum = Calculate_MD5(xlsx_conv_filepath);
-                    f.echoLine("Calculate: MD5 checksum was calculated");
-                    f.echoLine("Calculate: MD5 checksum was calculated");
+                    worker.ReportProgress(69, String.Format("Calculate: MD5 checksum was calculated"));
                 }
                 if (entry.ODS_Conv_Extension == ".ods")
                 {
                     // Inform user of .ods operation
                     string folder_number = Path.GetFileName(Path.GetDirectoryName(ods_conv_filepath));
-                    f.echoLine($"Copy saved to: {folder_number}\\1.ods");
-                    f.echoLine($"Analyzing: {folder_number}\\1.ods");
-                    f.echoLine($"Archival requirements identical to {folder_number}\\1.xlsx");
+                    worker.ReportProgress(69, String.Format($"Copy saved to: {folder_number}\\1.ods"));
+                    worker.ReportProgress(69, String.Format($"Analyzing: {folder_number}\\1.ods"));
+                    worker.ReportProgress(69, String.Format($"Archival requirements identical to {folder_number}\\1.xlsx"));
 
                     // Make an .ods copy
                     Conversion con = new Conversion();
@@ -202,11 +199,11 @@ namespace GUISC
 
                     // Validate .ods
                     Validation val = new Validation();
-                    ods_validity = val.Validate_OpenDocument(ods_conv_filepath);
+                    ods_validity = val.Validate_OpenDocument(ods_conv_filepath, worker);
 
                     // Calculate checksum
                     ods_conv_checksum = Calculate_MD5(ods_conv_filepath);
-                    f.echoLine("Calculate: MD5 checksum was calculated");
+                    worker.ReportProgress(69, String.Format("Calculate: MD5 checksum was calculated"));
                 }
 
                 // Calculate checksums for original and copied files
@@ -243,21 +240,20 @@ namespace GUISC
             File.WriteAllText(Results.CSV_filepath, csv.ToString(), Encoding.UTF8);
 
             // Zip the output directory
-            f.echoLine("---");
-            f.echoLine("ZIP DIRECTORY");
-            f.echoLine("---");
+            worker.ReportProgress(Function.archiveno, String.Format("---"));
+            worker.ReportProgress(Function.archiveno, String.Format("ZIP DIRECTORY"));
+            worker.ReportProgress(Function.archiveno, String.Format("---"));
             try
             {
                 ZIP_Directory(Results_Directory);
                 string zip_path = Results_Directory + ".zip";
-                f.echoLine($"The zipped archive directory was saved to: {zip_path}");
-                f.echoLine("Zip ended");
+                worker.ReportProgress(Function.archiveno, String.Format($"The zipped archive directory was saved to: {zip_path}"));
             }
             catch (SystemException)
             {
-                f.echoLine("Zip failed");
-                f.echoLine("Zip ended");
+                worker.ReportProgress(Function.archiveno, String.Format("Zip failed"));
             }
+            worker.ReportProgress(Function.archiveno, String.Format("---"));
         }
     }
 }
