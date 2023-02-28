@@ -207,7 +207,7 @@
             resultsDir_open.Name = "resultsDir_open";
             resultsDir_open.Size = new Size(105, 23);
             resultsDir_open.TabIndex = 21;
-            resultsDir_open.Text = "Results directory";
+            resultsDir_open.Text = "Open output dir";
             resultsDir_open.UseVisualStyleBackColor = true;
             resultsDir_open.Click += ResultsDir_open_Click;
             // 

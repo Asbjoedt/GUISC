@@ -183,9 +183,9 @@ namespace GUISC
         // Open results directory
         private void ResultsDir_open_Click(object sender, EventArgs e)
         {
-            if (Directory.Exists(resultsDirectory))
+            if (Directory.Exists(outputdir))
             {
-                Process.Start("explorer.exe", resultsDirectory);
+                Process.Start("explorer.exe", outputdir);
             }
         }
 
@@ -314,7 +314,14 @@ namespace GUISC
         // Set if all archival requirements are to be complied
         private void fullCompliance_CheckedChanged(object sender, EventArgs e)
         {
-            fullcompliance = true;
+            if (!fullcompliance)
+            {
+                fullcompliance = true;
+            }
+            else if (fullcompliance)
+            {
+                fullcompliance = false;
+            }
         }
     }
 }
