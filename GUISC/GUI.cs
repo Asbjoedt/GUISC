@@ -17,6 +17,7 @@ namespace GUISC
         public static string function = "";
         public static bool recurse = false;
         public static bool fullcompliance = false;
+        public static bool done = false;
         public static int countno;
         public static int convertno;
         public static int compareno;
@@ -40,8 +41,7 @@ namespace GUISC
             timer.Start();
 
             // Inform user of start
-            resultsWindow.AppendText("---");
-            resultsWindow.AppendText(Environment.NewLine + "GUISC started");
+            resultsWindow.AppendText("GUISC STARTED");
             resultsWindow.AppendText(Environment.NewLine + "---");
 
             // Disable input buttons
@@ -62,19 +62,13 @@ namespace GUISC
 
             // Do backgroundwork
             Run_Switch(worker);
+        }
 
-            // Check if there is a request to cancel the process
-            if (backgroundWorker1.CancellationPending)
-            {
-                e.Cancel = true;
-                return;
-            }
-
-            // Return if backgroundwork is cancelled
-            if (e.Cancel)
-            {
-                return;
-            }
+        // Cancel button
+        private void Cancel_Click(Object sender, EventArgs e)
+        {
+            // Quit application
+            Application.Exit();
         }
 
         // Inform user when application ends in backgroundworker
@@ -82,18 +76,15 @@ namespace GUISC
         {
             if (e.Cancelled)
             {
-                resultsWindow.AppendText(Environment.NewLine + "---");
-                resultsWindow.AppendText(Environment.NewLine + "GUISC was cancelled");
+                resultsWindow.AppendText(Environment.NewLine + "GUISC WAS CANCELLED");
             }
             else if (e.Error != null)
             {
-                resultsWindow.AppendText(Environment.NewLine + "---");
                 resultsWindow.AppendText(Environment.NewLine + "Error. Details: " + (e.Error as Exception).ToString());
             }
             else
             {
-                resultsWindow.AppendText(Environment.NewLine + "GUISC finished");
-                resultsWindow.AppendText(Environment.NewLine + "---");
+                resultsWindow.AppendText(Environment.NewLine + "GUISC FINISHED");
             }
 
             // Clear process line
@@ -105,6 +96,9 @@ namespace GUISC
 
             // Stop the timer
             timer.Stop();
+
+            // Show pop up to user
+            MessageBox.Show("GUISC finished!");
         }
 
         // Receive console inputs from backgroundworker by using ProgressChanged
@@ -125,7 +119,7 @@ namespace GUISC
         // Switch for methods to run
         private void Run_Switch(BackgroundWorker worker)
         {
-            // Create object instances
+            done = false;
             Count cou = new Count();
             Conversion con = new Conversion();
             Compare com = new Compare();
@@ -172,12 +166,18 @@ namespace GUISC
                     res.Archive_Results(worker);
                     break;
             }
+            done = true;
         }
 
         // Link to GitHub
         private void Link_LinkClicked(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/Asbjoedt/GUISC");
+            ProcessStartInfo github = new ProcessStartInfo
+            {
+                FileName = "https://github.com/Asbjoedt/GUISC",
+                UseShellExecute = true
+            };
+            Process.Start(github);
         }
 
         // Open results directory
@@ -185,7 +185,7 @@ namespace GUISC
         {
             if (Directory.Exists(resultsDirectory))
             {
-                Process.Start(resultsDirectory);
+                Process.Start("explorer.exe", resultsDirectory);
             }
         }
 
@@ -275,16 +275,6 @@ namespace GUISC
             outputDir_button.Enabled = true;
             functionPicker.Enabled = true;
             Recurse.Enabled = true;
-        }
-
-        // Cancel button
-        private void Cancel_Click(Object sender, EventArgs e)
-        {
-            // Cancel the asynchronous operation
-            this.backgroundWorker1.CancelAsync();
-
-            // Disable the cancel button
-            cancelButton.Enabled = false;
         }
 
         // Advance and show time

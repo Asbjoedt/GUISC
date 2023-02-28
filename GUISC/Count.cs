@@ -20,8 +20,7 @@ namespace GUISC
             numTOTAL = 0;
             numXLSX_Strict = 0;
 
-            worker.ReportProgress(Function.countno, String.Format("COUNT begins"));
-            worker.ReportProgress(Function.countno, String.Format("---"));
+            worker.ReportProgress(Function.countno, String.Format("COUNT BEGINS"));
 
             //Object reference
             DirectoryInfo count = new DirectoryInfo(inputdir);
@@ -114,6 +113,7 @@ namespace GUISC
                 Results.CSV_filepath = Results_Directory + "\\1_Count_Results.csv";
                 File.WriteAllText(Results.CSV_filepath, csv.ToString(), Encoding.UTF8);
 
+                worker.ReportProgress(Function.countno, String.Format("COUNT FINISHED"));
                 worker.ReportProgress(Function.countno, String.Format("---"));
                 return Results_Directory;
             }

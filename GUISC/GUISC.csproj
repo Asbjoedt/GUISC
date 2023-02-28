@@ -6,6 +6,15 @@
     <Nullable>enable</Nullable>
     <UseWindowsForms>true</UseWindowsForms>
     <ImplicitUsings>enable</ImplicitUsings>
+    <SignAssembly>True</SignAssembly>
+    <AssemblyOriginatorKeyFile>G:\Mit drev\Diverse\Keys\Signing keys for my programs\GUISC.snk</AssemblyOriginatorKeyFile>
+    <Title>GUISC</Title>
+    <Version>1.0.0</Version>
+    <Authors>Asbjørn Skødt</Authors>
+    <Description>Graphical User Interface Spreadsheet Count, Convert, Compare &amp; Archive</Description>
+    <Copyright>Asbjørn Skødt</Copyright>
+    <PackageProjectUrl></PackageProjectUrl>
+    <RepositoryUrl>https://github.com/Asbjoedt/GUISC</RepositoryUrl>
   </PropertyGroup>
 
   <ItemGroup>

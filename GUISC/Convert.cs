@@ -40,8 +40,7 @@ namespace GUISC
         // Convert spreadsheets method
         public List<fileIndex> Convert_Spreadsheets(string function, string inputdir, bool recurse, string Results_Directory, BackgroundWorker worker)
         {
-            worker.ReportProgress(Function.convertno, String.Format("CONVERT begins"));
-            worker.ReportProgress(Function.convertno, String.Format("---"));
+            worker.ReportProgress(Function.convertno, String.Format("CONVERT BEGINS"));
 
             // Open CSV file to log results
             var csv = new StringBuilder();
@@ -271,6 +270,7 @@ namespace GUISC
                 Results.CSV_filepath = Results_Directory + "\\2_Convert_Results.csv";
                 File.WriteAllText(Results.CSV_filepath, csv.ToString(), Encoding.UTF8);
             }
+            worker.ReportProgress(Function.convertno, String.Format("CONVERT FINISHED"));
             worker.ReportProgress(Function.convertno, String.Format("---"));
             return File_List;
         }

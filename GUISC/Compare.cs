@@ -17,8 +17,7 @@ namespace GUISC
         // Compare spreadsheets
         public void Compare_Spreadsheets(string function, string Results_Directory, List<fileIndex> File_List, BackgroundWorker worker)
         {
-            worker.ReportProgress(Function.compareno, String.Format("COMPARE begins"));
-            worker.ReportProgress(Function.compareno, String.Format("---"));
+            worker.ReportProgress(Function.compareno, String.Format("COMPARE BEGINS"));
 
             // Open CSV file to log results
             var csv = new StringBuilder();
@@ -104,6 +103,7 @@ namespace GUISC
             Results.CSV_filepath = Results_Directory + "\\3_Compare_Results.csv";
             File.WriteAllText(Results.CSV_filepath, csv.ToString(), Encoding.UTF8);
 
+            worker.ReportProgress(Function.compareno, String.Format("COMPARE FINISHED"));
             worker.ReportProgress(Function.compareno, String.Format("---"));
         }
     }

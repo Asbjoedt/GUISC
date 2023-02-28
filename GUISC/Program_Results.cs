@@ -14,7 +14,6 @@ namespace GUISC
         public void Count_Results(BackgroundWorker worker)
         {
             worker.ReportProgress(100, String.Format("SUMMARY"));
-            worker.ReportProgress(100, String.Format("---"));
             worker.ReportProgress(100, String.Format($"COUNT: {Count.numTOTAL} spreadsheet files in total"));
             worker.ReportProgress(100, String.Format("---"));
         }

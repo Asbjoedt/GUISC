@@ -28,295 +28,290 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.Run = new System.Windows.Forms.Button();
-            this.inputDir = new System.Windows.Forms.TextBox();
-            this.outputDir = new System.Windows.Forms.TextBox();
-            this.resultsWindow = new System.Windows.Forms.RichTextBox();
-            this.cancelButton = new System.Windows.Forms.Button();
-            this.Title = new System.Windows.Forms.Label();
-            this.Link = new System.Windows.Forms.LinkLabel();
-            this.resultsLog_label = new System.Windows.Forms.Label();
-            this.Function_label = new System.Windows.Forms.Label();
-            this.Recurse = new System.Windows.Forms.CheckBox();
-            this.inputDir_button = new System.Windows.Forms.Button();
-            this.outputDir_button = new System.Windows.Forms.Button();
-            this.currentLine = new System.Windows.Forms.TextBox();
-            this.currentProcessLine_label = new System.Windows.Forms.Label();
-            this.resultsDir_open = new System.Windows.Forms.Button();
-            this.timeWindow = new System.Windows.Forms.TextBox();
-            this.timeWindow_label = new System.Windows.Forms.Label();
-            this.functionPicker = new System.Windows.Forms.ComboBox();
-            this.inputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
-            this.outputDir_prompt = new System.Windows.Forms.FolderBrowserDialog();
-            this.timer = new System.Windows.Forms.Timer(this.components);
-            this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
-            this.progressBar = new System.Windows.Forms.ProgressBar();
-            this.prgoressBarLabel = new System.Windows.Forms.Label();
-            this.fullCompliance = new System.Windows.Forms.CheckBox();
-            this.SuspendLayout();
+            components = new System.ComponentModel.Container();
+            Run = new Button();
+            inputDir = new TextBox();
+            outputDir = new TextBox();
+            resultsWindow = new RichTextBox();
+            cancelButton = new Button();
+            Title = new Label();
+            Link = new LinkLabel();
+            resultsLog_label = new Label();
+            Function_label = new Label();
+            Recurse = new CheckBox();
+            inputDir_button = new Button();
+            outputDir_button = new Button();
+            currentLine = new TextBox();
+            currentProcessLine_label = new Label();
+            resultsDir_open = new Button();
+            timeWindow = new TextBox();
+            timeWindow_label = new Label();
+            functionPicker = new ComboBox();
+            inputDir_prompt = new FolderBrowserDialog();
+            outputDir_prompt = new FolderBrowserDialog();
+            timer = new System.Windows.Forms.Timer(components);
+            backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
+            progressBar = new ProgressBar();
+            prgoressBarLabel = new Label();
+            fullCompliance = new CheckBox();
+            SuspendLayout();
             // 
             // Run
             // 
-            this.Run.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Run.Enabled = false;
-            this.Run.Location = new System.Drawing.Point(12, 188);
-            this.Run.Name = "Run";
-            this.Run.Size = new System.Drawing.Size(75, 23);
-            this.Run.TabIndex = 0;
-            this.Run.Text = "Run";
-            this.Run.UseVisualStyleBackColor = true;
-            this.Run.Click += new System.EventHandler(this.Run_Click);
+            Run.Cursor = Cursors.Hand;
+            Run.Enabled = false;
+            Run.Location = new Point(12, 188);
+            Run.Name = "Run";
+            Run.Size = new Size(75, 23);
+            Run.TabIndex = 0;
+            Run.Text = "Run";
+            Run.UseVisualStyleBackColor = true;
+            Run.Click += Run_Click;
             // 
             // inputDir
             // 
-            this.inputDir.Location = new System.Drawing.Point(12, 40);
-            this.inputDir.Name = "inputDir";
-            this.inputDir.ReadOnly = true;
-            this.inputDir.Size = new System.Drawing.Size(404, 23);
-            this.inputDir.TabIndex = 1;
-            this.inputDir.Text = "Choose input directory";
-            this.inputDir.WordWrap = false;
+            inputDir.Location = new Point(12, 40);
+            inputDir.Name = "inputDir";
+            inputDir.ReadOnly = true;
+            inputDir.Size = new Size(404, 23);
+            inputDir.TabIndex = 1;
+            inputDir.Text = "Choose input directory";
+            inputDir.WordWrap = false;
             // 
             // outputDir
             // 
-            this.outputDir.Location = new System.Drawing.Point(12, 69);
-            this.outputDir.Name = "outputDir";
-            this.outputDir.ReadOnly = true;
-            this.outputDir.Size = new System.Drawing.Size(404, 23);
-            this.outputDir.TabIndex = 2;
-            this.outputDir.Text = "Choose output directory";
-            this.outputDir.WordWrap = false;
+            outputDir.Location = new Point(12, 69);
+            outputDir.Name = "outputDir";
+            outputDir.ReadOnly = true;
+            outputDir.Size = new Size(404, 23);
+            outputDir.TabIndex = 2;
+            outputDir.Text = "Choose output directory";
+            outputDir.WordWrap = false;
             // 
             // resultsWindow
             // 
-            this.resultsWindow.Location = new System.Drawing.Point(12, 261);
-            this.resultsWindow.Name = "resultsWindow";
-            this.resultsWindow.ReadOnly = true;
-            this.resultsWindow.ScrollBars = System.Windows.Forms.RichTextBoxScrollBars.Vertical;
-            this.resultsWindow.Size = new System.Drawing.Size(458, 210);
-            this.resultsWindow.TabIndex = 3;
-            this.resultsWindow.Text = "";
+            resultsWindow.Location = new Point(12, 261);
+            resultsWindow.Name = "resultsWindow";
+            resultsWindow.ReadOnly = true;
+            resultsWindow.ScrollBars = RichTextBoxScrollBars.Vertical;
+            resultsWindow.Size = new Size(458, 210);
+            resultsWindow.TabIndex = 3;
+            resultsWindow.Text = "";
             // 
             // cancelButton
             // 
-            this.cancelButton.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.cancelButton.Location = new System.Drawing.Point(93, 188);
-            this.cancelButton.Name = "cancelButton";
-            this.cancelButton.Size = new System.Drawing.Size(75, 23);
-            this.cancelButton.TabIndex = 10;
-            this.cancelButton.Text = "Cancel";
-            this.cancelButton.UseVisualStyleBackColor = true;
-            this.cancelButton.Click += new System.EventHandler(this.Cancel_Click);
+            cancelButton.Cursor = Cursors.Hand;
+            cancelButton.Location = new Point(204, 188);
+            cancelButton.Name = "cancelButton";
+            cancelButton.Size = new Size(75, 23);
+            cancelButton.TabIndex = 10;
+            cancelButton.Text = "Quit";
+            cancelButton.UseVisualStyleBackColor = true;
+            cancelButton.Click += Cancel_Click;
             // 
             // Title
             // 
-            this.Title.AutoSize = true;
-            this.Title.Location = new System.Drawing.Point(12, 9);
-            this.Title.Name = "Title";
-            this.Title.Size = new System.Drawing.Size(404, 15);
-            this.Title.TabIndex = 11;
-            this.Title.Text = "Graphical User Interface Spreadsheet Count, Convert, Compare and Archive";
+            Title.AutoSize = true;
+            Title.Location = new Point(12, 9);
+            Title.Name = "Title";
+            Title.Size = new Size(404, 15);
+            Title.TabIndex = 11;
+            Title.Text = "Graphical User Interface Spreadsheet Count, Convert, Compare and Archive";
             // 
             // Link
             // 
-            this.Link.AutoSize = true;
-            this.Link.Location = new System.Drawing.Point(425, 9);
-            this.Link.Name = "Link";
-            this.Link.Size = new System.Drawing.Size(45, 15);
-            this.Link.TabIndex = 12;
-            this.Link.TabStop = true;
-            this.Link.Text = "GitHub";
-            this.Link.Click += new System.EventHandler(this.Link_LinkClicked);
+            Link.AutoSize = true;
+            Link.Location = new Point(425, 9);
+            Link.Name = "Link";
+            Link.Size = new Size(45, 15);
+            Link.TabIndex = 12;
+            Link.TabStop = true;
+            Link.Text = "GitHub";
+            Link.Click += Link_LinkClicked;
             // 
             // resultsLog_label
             // 
-            this.resultsLog_label.AutoSize = true;
-            this.resultsLog_label.Location = new System.Drawing.Point(403, 243);
-            this.resultsLog_label.Name = "resultsLog_label";
-            this.resultsLog_label.Size = new System.Drawing.Size(67, 15);
-            this.resultsLog_label.TabIndex = 14;
-            this.resultsLog_label.Text = "Process log";
+            resultsLog_label.AutoSize = true;
+            resultsLog_label.Location = new Point(403, 243);
+            resultsLog_label.Name = "resultsLog_label";
+            resultsLog_label.Size = new Size(67, 15);
+            resultsLog_label.TabIndex = 14;
+            resultsLog_label.Text = "Process log";
             // 
             // Function_label
             // 
-            this.Function_label.AutoSize = true;
-            this.Function_label.Location = new System.Drawing.Point(12, 105);
-            this.Function_label.Name = "Function_label";
-            this.Function_label.Size = new System.Drawing.Size(95, 15);
-            this.Function_label.TabIndex = 15;
-            this.Function_label.Text = "Choose function";
+            Function_label.AutoSize = true;
+            Function_label.Location = new Point(12, 105);
+            Function_label.Name = "Function_label";
+            Function_label.Size = new Size(95, 15);
+            Function_label.TabIndex = 15;
+            Function_label.Text = "Choose function";
             // 
             // Recurse
             // 
-            this.Recurse.AutoSize = true;
-            this.Recurse.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.Recurse.Location = new System.Drawing.Point(12, 152);
-            this.Recurse.Name = "Recurse";
-            this.Recurse.Size = new System.Drawing.Size(144, 19);
-            this.Recurse.TabIndex = 16;
-            this.Recurse.Text = "Recurse subdirectories";
-            this.Recurse.UseVisualStyleBackColor = true;
-            this.Recurse.CheckedChanged += new System.EventHandler(this.Recurse_CheckedChanged);
+            Recurse.AutoSize = true;
+            Recurse.Cursor = Cursors.Hand;
+            Recurse.Location = new Point(12, 152);
+            Recurse.Name = "Recurse";
+            Recurse.Size = new Size(144, 19);
+            Recurse.TabIndex = 16;
+            Recurse.Text = "Recurse subdirectories";
+            Recurse.UseVisualStyleBackColor = true;
+            Recurse.CheckedChanged += Recurse_CheckedChanged;
             // 
             // inputDir_button
             // 
-            this.inputDir_button.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.inputDir_button.Location = new System.Drawing.Point(425, 40);
-            this.inputDir_button.Name = "inputDir_button";
-            this.inputDir_button.Size = new System.Drawing.Size(45, 23);
-            this.inputDir_button.TabIndex = 17;
-            this.inputDir_button.Text = "...";
-            this.inputDir_button.UseVisualStyleBackColor = true;
-            this.inputDir_button.Click += new System.EventHandler(this.InputDir_button_Click);
+            inputDir_button.Cursor = Cursors.Hand;
+            inputDir_button.Location = new Point(425, 40);
+            inputDir_button.Name = "inputDir_button";
+            inputDir_button.Size = new Size(45, 23);
+            inputDir_button.TabIndex = 17;
+            inputDir_button.Text = "...";
+            inputDir_button.UseVisualStyleBackColor = true;
+            inputDir_button.Click += InputDir_button_Click;
             // 
             // outputDir_button
             // 
-            this.outputDir_button.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.outputDir_button.Location = new System.Drawing.Point(425, 69);
-            this.outputDir_button.Name = "outputDir_button";
-            this.outputDir_button.Size = new System.Drawing.Size(45, 23);
-            this.outputDir_button.TabIndex = 18;
-            this.outputDir_button.Text = "...";
-            this.outputDir_button.UseVisualStyleBackColor = true;
-            this.outputDir_button.Click += new System.EventHandler(this.OutputDir_button_Click);
+            outputDir_button.Cursor = Cursors.Hand;
+            outputDir_button.Location = new Point(425, 69);
+            outputDir_button.Name = "outputDir_button";
+            outputDir_button.Size = new Size(45, 23);
+            outputDir_button.TabIndex = 18;
+            outputDir_button.Text = "...";
+            outputDir_button.UseVisualStyleBackColor = true;
+            outputDir_button.Click += OutputDir_button_Click;
             // 
             // currentLine
             // 
-            this.currentLine.Location = new System.Drawing.Point(12, 217);
-            this.currentLine.Name = "currentLine";
-            this.currentLine.ReadOnly = true;
-            this.currentLine.Size = new System.Drawing.Size(458, 23);
-            this.currentLine.TabIndex = 19;
-            this.currentLine.WordWrap = false;
+            currentLine.Location = new Point(12, 217);
+            currentLine.Name = "currentLine";
+            currentLine.ReadOnly = true;
+            currentLine.Size = new Size(458, 23);
+            currentLine.TabIndex = 19;
+            currentLine.WordWrap = false;
             // 
             // currentProcessLine_label
             // 
-            this.currentProcessLine_label.AutoSize = true;
-            this.currentProcessLine_label.Location = new System.Drawing.Point(358, 199);
-            this.currentProcessLine_label.Name = "currentProcessLine_label";
-            this.currentProcessLine_label.Size = new System.Drawing.Size(112, 15);
-            this.currentProcessLine_label.TabIndex = 20;
-            this.currentProcessLine_label.Text = "Current process line";
+            currentProcessLine_label.AutoSize = true;
+            currentProcessLine_label.Location = new Point(358, 199);
+            currentProcessLine_label.Name = "currentProcessLine_label";
+            currentProcessLine_label.Size = new Size(112, 15);
+            currentProcessLine_label.TabIndex = 20;
+            currentProcessLine_label.Text = "Current process line";
             // 
             // resultsDir_open
             // 
-            this.resultsDir_open.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.resultsDir_open.Enabled = false;
-            this.resultsDir_open.Location = new System.Drawing.Point(174, 188);
-            this.resultsDir_open.Name = "resultsDir_open";
-            this.resultsDir_open.Size = new System.Drawing.Size(105, 23);
-            this.resultsDir_open.TabIndex = 21;
-            this.resultsDir_open.Text = "Results directory";
-            this.resultsDir_open.UseVisualStyleBackColor = true;
-            this.resultsDir_open.Click += new System.EventHandler(this.ResultsDir_open_Click);
+            resultsDir_open.Cursor = Cursors.Hand;
+            resultsDir_open.Enabled = false;
+            resultsDir_open.Location = new Point(93, 188);
+            resultsDir_open.Name = "resultsDir_open";
+            resultsDir_open.Size = new Size(105, 23);
+            resultsDir_open.TabIndex = 21;
+            resultsDir_open.Text = "Results directory";
+            resultsDir_open.UseVisualStyleBackColor = true;
+            resultsDir_open.Click += ResultsDir_open_Click;
             // 
             // timeWindow
             // 
-            this.timeWindow.Location = new System.Drawing.Point(395, 127);
-            this.timeWindow.Name = "timeWindow";
-            this.timeWindow.ReadOnly = true;
-            this.timeWindow.Size = new System.Drawing.Size(75, 23);
-            this.timeWindow.TabIndex = 22;
-            this.timeWindow.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            timeWindow.Location = new Point(395, 127);
+            timeWindow.Name = "timeWindow";
+            timeWindow.ReadOnly = true;
+            timeWindow.Size = new Size(75, 23);
+            timeWindow.TabIndex = 22;
+            timeWindow.TextAlign = HorizontalAlignment.Center;
             // 
             // timeWindow_label
             // 
-            this.timeWindow_label.AutoSize = true;
-            this.timeWindow_label.Location = new System.Drawing.Point(405, 109);
-            this.timeWindow_label.Name = "timeWindow_label";
-            this.timeWindow_label.Size = new System.Drawing.Size(65, 15);
-            this.timeWindow_label.TabIndex = 23;
-            this.timeWindow_label.Text = "Time spent";
+            timeWindow_label.AutoSize = true;
+            timeWindow_label.Location = new Point(405, 109);
+            timeWindow_label.Name = "timeWindow_label";
+            timeWindow_label.Size = new Size(65, 15);
+            timeWindow_label.TabIndex = 23;
+            timeWindow_label.Text = "Time spent";
             // 
             // functionPicker
             // 
-            this.functionPicker.FormattingEnabled = true;
-            this.functionPicker.Items.AddRange(new object[] {
-            "Count",
-            "Count & Convert",
-            "Count, Convert & Compare",
-            "Count, Convert, Compare & Archive"});
-            this.functionPicker.Location = new System.Drawing.Point(12, 123);
-            this.functionPicker.Name = "functionPicker";
-            this.functionPicker.Size = new System.Drawing.Size(267, 23);
-            this.functionPicker.TabIndex = 25;
-            this.functionPicker.Text = "...";
-            this.functionPicker.SelectedIndexChanged += new System.EventHandler(this.functionPicker_SelectedIndexChanged);
+            functionPicker.FormattingEnabled = true;
+            functionPicker.Items.AddRange(new object[] { "Count", "Count & Convert", "Count, Convert & Compare", "Count, Convert, Compare & Archive" });
+            functionPicker.Location = new Point(12, 123);
+            functionPicker.Name = "functionPicker";
+            functionPicker.Size = new Size(267, 23);
+            functionPicker.TabIndex = 25;
+            functionPicker.Text = "...";
+            functionPicker.SelectedIndexChanged += functionPicker_SelectedIndexChanged;
             // 
             // timer
             // 
-            this.timer.Interval = 1000;
-            this.timer.Tick += new System.EventHandler(this.timer_Elapsed);
+            timer.Interval = 1000;
+            timer.Tick += timer_Elapsed;
             // 
             // backgroundWorker1
             // 
-            this.backgroundWorker1.WorkerReportsProgress = true;
-            this.backgroundWorker1.WorkerSupportsCancellation = true;
-            this.backgroundWorker1.DoWork += new System.ComponentModel.DoWorkEventHandler(this.backgroundWorker1_DoWork);
-            this.backgroundWorker1.ProgressChanged += new System.ComponentModel.ProgressChangedEventHandler(this.backgroundWorker1_ProgressChanged);
-            this.backgroundWorker1.RunWorkerCompleted += new System.ComponentModel.RunWorkerCompletedEventHandler(this.backgroundWorker1_RunWorkerCompleted);
+            backgroundWorker1.WorkerReportsProgress = true;
+            backgroundWorker1.WorkerSupportsCancellation = true;
+            backgroundWorker1.DoWork += backgroundWorker1_DoWork;
+            backgroundWorker1.ProgressChanged += backgroundWorker1_ProgressChanged;
+            backgroundWorker1.RunWorkerCompleted += backgroundWorker1_RunWorkerCompleted;
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(370, 173);
-            this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(100, 23);
-            this.progressBar.TabIndex = 26;
+            progressBar.Location = new Point(370, 173);
+            progressBar.Name = "progressBar";
+            progressBar.Size = new Size(100, 23);
+            progressBar.TabIndex = 26;
             // 
             // prgoressBarLabel
             // 
-            this.prgoressBarLabel.AutoSize = true;
-            this.prgoressBarLabel.Location = new System.Drawing.Point(398, 153);
-            this.prgoressBarLabel.Name = "prgoressBarLabel";
-            this.prgoressBarLabel.Size = new System.Drawing.Size(72, 15);
-            this.prgoressBarLabel.TabIndex = 27;
-            this.prgoressBarLabel.Text = "Progress bar";
+            prgoressBarLabel.AutoSize = true;
+            prgoressBarLabel.Location = new Point(398, 153);
+            prgoressBarLabel.Name = "prgoressBarLabel";
+            prgoressBarLabel.Size = new Size(72, 15);
+            prgoressBarLabel.TabIndex = 27;
+            prgoressBarLabel.Text = "Progress bar";
             // 
             // fullCompliance
             // 
-            this.fullCompliance.AutoSize = true;
-            this.fullCompliance.Location = new System.Drawing.Point(162, 152);
-            this.fullCompliance.Name = "fullCompliance";
-            this.fullCompliance.Size = new System.Drawing.Size(110, 19);
-            this.fullCompliance.TabIndex = 28;
-            this.fullCompliance.Text = "Full compliance";
-            this.fullCompliance.UseVisualStyleBackColor = true;
-            this.fullCompliance.Visible = false;
-            this.fullCompliance.CheckedChanged += new System.EventHandler(this.fullCompliance_CheckedChanged);
+            fullCompliance.AutoSize = true;
+            fullCompliance.Location = new Point(162, 152);
+            fullCompliance.Name = "fullCompliance";
+            fullCompliance.Size = new Size(110, 19);
+            fullCompliance.TabIndex = 28;
+            fullCompliance.Text = "Full compliance";
+            fullCompliance.UseVisualStyleBackColor = true;
+            fullCompliance.Visible = false;
+            fullCompliance.CheckedChanged += fullCompliance_CheckedChanged;
             // 
             // Function
             // 
-            this.AllowDrop = true;
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.CancelButton = this.cancelButton;
-            this.ClientSize = new System.Drawing.Size(482, 483);
-            this.Controls.Add(this.fullCompliance);
-            this.Controls.Add(this.prgoressBarLabel);
-            this.Controls.Add(this.progressBar);
-            this.Controls.Add(this.functionPicker);
-            this.Controls.Add(this.timeWindow_label);
-            this.Controls.Add(this.timeWindow);
-            this.Controls.Add(this.resultsDir_open);
-            this.Controls.Add(this.currentProcessLine_label);
-            this.Controls.Add(this.currentLine);
-            this.Controls.Add(this.outputDir_button);
-            this.Controls.Add(this.inputDir_button);
-            this.Controls.Add(this.Recurse);
-            this.Controls.Add(this.Function_label);
-            this.Controls.Add(this.resultsLog_label);
-            this.Controls.Add(this.Link);
-            this.Controls.Add(this.Title);
-            this.Controls.Add(this.cancelButton);
-            this.Controls.Add(this.resultsWindow);
-            this.Controls.Add(this.outputDir);
-            this.Controls.Add(this.inputDir);
-            this.Controls.Add(this.Run);
-            this.Name = "Function";
-            this.ResumeLayout(false);
-            this.PerformLayout();
-
+            AllowDrop = true;
+            AutoScaleDimensions = new SizeF(7F, 15F);
+            AutoScaleMode = AutoScaleMode.Font;
+            CancelButton = cancelButton;
+            ClientSize = new Size(482, 483);
+            Controls.Add(fullCompliance);
+            Controls.Add(prgoressBarLabel);
+            Controls.Add(progressBar);
+            Controls.Add(functionPicker);
+            Controls.Add(timeWindow_label);
+            Controls.Add(timeWindow);
+            Controls.Add(resultsDir_open);
+            Controls.Add(currentProcessLine_label);
+            Controls.Add(currentLine);
+            Controls.Add(outputDir_button);
+            Controls.Add(inputDir_button);
+            Controls.Add(Recurse);
+            Controls.Add(Function_label);
+            Controls.Add(resultsLog_label);
+            Controls.Add(Link);
+            Controls.Add(Title);
+            Controls.Add(cancelButton);
+            Controls.Add(resultsWindow);
+            Controls.Add(outputDir);
+            Controls.Add(inputDir);
+            Controls.Add(Run);
+            Name = "Function";
+            ResumeLayout(false);
+            PerformLayout();
         }
 
         #endregion

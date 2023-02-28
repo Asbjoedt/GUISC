@@ -46,8 +46,7 @@ namespace GUISC
             bool? archive_req_accept = null;
 
             // Inform user of beginning of archiving
-            worker.ReportProgress(Function.archiveno, String.Format("ARCHIVE begins"));
-            worker.ReportProgress(Function.archiveno, String.Format("---"));
+            worker.ReportProgress(Function.archiveno, String.Format("ARCHIVE BEGINS"));
 
             // Open CSV file to log archive results
             var csv = new StringBuilder();
@@ -240,9 +239,7 @@ namespace GUISC
             File.WriteAllText(Results.CSV_filepath, csv.ToString(), Encoding.UTF8);
 
             // Zip the output directory
-            worker.ReportProgress(Function.archiveno, String.Format("---"));
-            worker.ReportProgress(Function.archiveno, String.Format("ZIP DIRECTORY"));
-            worker.ReportProgress(Function.archiveno, String.Format("---"));
+            worker.ReportProgress(Function.archiveno, String.Format("Zip directory"));
             try
             {
                 ZIP_Directory(Results_Directory);
@@ -253,6 +250,7 @@ namespace GUISC
             {
                 worker.ReportProgress(Function.archiveno, String.Format("Zip failed"));
             }
+            worker.ReportProgress(Function.archiveno, String.Format("ARCHIVE FINISHED"));
             worker.ReportProgress(Function.archiveno, String.Format("---"));
         }
     }
