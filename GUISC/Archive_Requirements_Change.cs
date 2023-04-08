@@ -451,7 +451,7 @@ namespace GUISC
 
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
             {
-                PackageProperties property = spreadsheet.Package.PackageProperties;
+                PackageProperties property = spreadsheet.PackageProperties;
 
                 // Create metadata file
                 using (StreamWriter w = File.AppendText($"{folder}\\orgFile_Metadata.txt"))

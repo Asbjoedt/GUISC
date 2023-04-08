@@ -431,7 +431,7 @@ namespace GUISC
             // Perform check
             using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
             {
-                PackageProperties property = spreadsheet.Package.PackageProperties;
+                PackageProperties property = spreadsheet.PackageProperties;
 
                 if (property.Creator != null)
                 {
