@@ -431,14 +431,14 @@ namespace GUISC
         {
             bool success = false;
 
-            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true))
+            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, true, new OpenSettings()
             {
-                if (spreadsheet.WorkbookPart.Workbook.AbsolutePath != null)
-                {
-                    AbsolutePath absPath = spreadsheet.WorkbookPart.Workbook.GetFirstChild<AbsolutePath>();
-                    absPath.Remove();
-                    success = true;
-                }
+                MarkupCompatibilityProcessSettings = new MarkupCompatibilityProcessSettings(MarkupCompatibilityProcessMode.ProcessAllParts, FileFormatVersions.Office2013)
+            }))
+            {
+                AbsolutePath absPath = spreadsheet.WorkbookPart.Workbook.AbsolutePath;
+                absPath.Remove();
+                success = true;
             }
             return success;
         }

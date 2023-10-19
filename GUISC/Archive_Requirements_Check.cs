@@ -413,12 +413,13 @@ namespace GUISC
             bool absolutepath = false;
 
             // Perform check
-            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false))
+            using (SpreadsheetDocument spreadsheet = SpreadsheetDocument.Open(filepath, false, new OpenSettings()
+            {
+                MarkupCompatibilityProcessSettings = new MarkupCompatibilityProcessSettings(MarkupCompatibilityProcessMode.ProcessAllParts, DocumentFormat.OpenXml.FileFormatVersions.Office2013)
+            }))
             {
                 if (spreadsheet.WorkbookPart.Workbook.AbsolutePath != null)
-                {
                     absolutepath = true;
-                }
             }
             return absolutepath;
         }
