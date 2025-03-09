@@ -82,7 +82,7 @@ namespace GUISC
                         // Inform user
                         worker.ReportProgress(69, String.Format(org_filepath)); // Inform user of original filepath
                         string folder_number = Path.GetFileName(Path.GetDirectoryName(xlsx_conv_filepath));
-                        worker.ReportProgress(69, String.Format($"Analyzing: {folder_number}\\1.xlsx")); // Inform user of analyzed filepath
+                        worker.ReportProgress(69, String.Format($"Analyzing: ..\\{folder_number}\\1.xlsx")); // Inform user of analyzed filepath
 
                         // Check .xlsx for archival requirements
                         Archive_Requirements arc = new Archive_Requirements();
@@ -188,9 +188,8 @@ namespace GUISC
                 {
                     // Inform user of .ods operation
                     string folder_number = Path.GetFileName(Path.GetDirectoryName(ods_conv_filepath));
-                    worker.ReportProgress(69, String.Format($"Copy saved to: {folder_number}\\1.ods"));
-                    worker.ReportProgress(69, String.Format($"Analyzing: {folder_number}\\1.ods"));
-                    worker.ReportProgress(69, String.Format($"Archival requirements identical to {folder_number}\\1.xlsx"));
+                    worker.ReportProgress(69, String.Format($"Copy saved to: ..\\{folder_number}\\1.ods"));
+                    worker.ReportProgress(69, String.Format($"Analyzing: ..\\{folder_number}\\1.ods"));
 
                     // Make an .ods copy
                     Conversion con = new Conversion();
@@ -239,16 +238,13 @@ namespace GUISC
             File.WriteAllText(Results.CSV_filepath, csv.ToString(), Encoding.UTF8);
 
             // Zip the output directory
-            worker.ReportProgress(Function.archiveno, String.Format("Zip directory"));
             try
             {
                 ZIP_Directory(Results_Directory);
-                string zip_path = Results_Directory + ".zip";
-                worker.ReportProgress(Function.archiveno, String.Format($"The zipped archive directory was saved to: {zip_path}"));
             }
             catch (SystemException)
             {
-                worker.ReportProgress(Function.archiveno, String.Format("Zip failed"));
+                worker.ReportProgress(Function.archiveno, String.Format("Zip directory failed"));
             }
             worker.ReportProgress(Function.archiveno, String.Format("ARCHIVE FINISHED"));
             worker.ReportProgress(Function.archiveno, String.Format("---"));

@@ -22,7 +22,7 @@ namespace GUISC
                 Process app = new Process();
                 app.StartInfo.UseShellExecute = false;
                 app.StartInfo.FileName = "javaw";
-                string normal_dir = "C:\\Program Files\\ODF Validator\\odfvalidator-0.10.0-jar-with-dependencies.jar";
+                string normal_dir = "C:\\Program Files\\ODF Validator\\odfvalidator-0.12.0-jar-with-dependencies.jar";
                 string? environ_dir = null;
                 if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) // If app is run on Windows
                 {

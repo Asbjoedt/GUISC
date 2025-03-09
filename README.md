@@ -17,11 +17,17 @@ A Windows application made in C# and Windows Forms. It is a prototype project fo
 * If you want to use the compare function
 * You need to install program in its default directory, or create environment variable "BeyondCompare" with path to your installation
 
+:warning: **[ODF Validator 0.12.0](https://odftoolkit.org/conformance/ODFValidator.html)**
+* If you want to validate .ods spreadsheets
+* You need to install program in "C:\Program Files\ODF Validator" and name program "odfvalidator-0.12.0-jar-with-dependencies.jar", or create environment variable "ODFValidator" with path to your installation
+* ODF Validator needs latest version of Java Development Kit installed
+
 ## Packages and software
 The following packages and software are used under license in GUISC.
 * [Beyond Compare 4](https://www.scootersoftware.com/index.php), copyright (c) 2022 Scooter Software, Inc.
 * [LibreOffice](https://www.libreoffice.org/), Mozilla Public License v2.0
 * [Magick.Net](https://github.com/dlemstra/Magick.NET), Apache-2.0 license, copyright (c) Dirk Lemstra
 * [Microsoft Excel](https://www.microsoft.com/en-us/microsoft-365/excel), copyright (c) Microsoft Corporation
-* [ODF Validator 0.10.0](https://odftoolkit.org/conformance/ODFValidator.html), Apache License, [copyright info](https://github.com/tdf/odftoolkit/blob/master/NOTICE)
+* [ODF Validator 0.12.0](https://odftoolkit.org/conformance/ODFValidator.html), Apache License, [copyright info](https://github.com/tdf/odftoolkit/blob/master/NOTICE)
 * [Open XML SDK](https://github.com/OfficeDev/Open-XML-SDK), MIT License, copyright (c) Microsoft Corporation
+* [FFmpeg](https://ffmpeg.org/), LGPL v2.1 license

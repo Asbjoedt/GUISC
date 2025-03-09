@@ -184,9 +184,7 @@ namespace GUISC
         private void ResultsDir_open_Click(object sender, EventArgs e)
         {
             if (Directory.Exists(outputdir))
-            {
                 Process.Start("explorer.exe", outputdir);
-            }
         }
 
         // Set input directory
@@ -265,6 +263,7 @@ namespace GUISC
             outputDir_button.Enabled = false;
             functionPicker.Enabled = false;
             Recurse.Enabled = false;
+            fullCompliance.Enabled = false;
         }
 
         // Enable input buttons
@@ -275,6 +274,7 @@ namespace GUISC
             outputDir_button.Enabled = true;
             functionPicker.Enabled = true;
             Recurse.Enabled = true;
+            fullCompliance.Enabled = true;
         }
 
         // Advance and show time

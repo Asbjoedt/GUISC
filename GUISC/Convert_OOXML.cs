@@ -1,9 +1,5 @@
 ﻿using System;
 using System.ComponentModel;
-using System.IO;
-using System.IO.Packaging;
-using System.Linq;
-using System.Text;
 using DocumentFormat.OpenXml;
 using DocumentFormat.OpenXml.Packaging;
 using DocumentFormat.OpenXml.Spreadsheet;
@@ -20,7 +16,7 @@ namespace GUISC
 				try
 				{
 					// Check for certain protection
-					if (spreadsheet.WorkbookPart.Workbook.WorkbookProtection != null || spreadsheet.WorkbookPart.Workbook.FileSharing != null) // This line will throw NullReferebceException
+					if (spreadsheet.WorkbookPart.Workbook.WorkbookProtection != null || spreadsheet.WorkbookPart.Workbook.FileSharing != null) // This line will throw NullReferenceException
 					{
 						throw new FileFormatException();
 					}
