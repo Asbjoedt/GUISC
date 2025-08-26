@@ -24,6 +24,7 @@ A Windows application made in C# and Windows Forms. It is a prototype project fo
 
 ## Packages and software
 The following packages and software are used under license in GUISC.
+* [.Net 9](https://dotnet.microsoft.com/en-us/download/dotnet/9.0), copyright (c) Microsoft Corporation
 * [Beyond Compare 4](https://www.scootersoftware.com/index.php), copyright (c) 2022 Scooter Software, Inc.
 * [LibreOffice](https://www.libreoffice.org/), Mozilla Public License v2.0
 * [Magick.Net](https://github.com/dlemstra/Magick.NET), Apache-2.0 license, copyright (c) Dirk Lemstra
